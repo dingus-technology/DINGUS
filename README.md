@@ -1,6 +1,5 @@
-# 🚀 Docker API Template
+# 🚀 Chat with Logs
 
-Welcome to the **Docker API Template**! This template is designed to streamline your Docker-based development workflow. Whether you're building an API or managing a complex system, this setup gets you up and running quickly. Here's how to get started:
 
 ---
 
@@ -16,15 +15,12 @@ Run the following command:
 cp sample.env .env
 ```
 
-### 2. Customize Your `.env`
+### 2. Make src/scripts Executable
 
-In your new `.env` file, you'll need to configure your environment-specific variables.
-
-For example:
+Ensure that the src/scripts directory is executable. Run the following command:
 
 ```bash
-USER_NAME=user
-PROJECT_NAME="awesome-project"
+chmod +x src/scripts/*
 ```
 
 ### 3. Install Docker
@@ -33,7 +29,7 @@ This codebase requires Docker to run. Development was done using Docker version 
 
 ---
 
-## 🚢 Getting Started with Docker
+## 🐋 Getting Started with Docker
 
 Now, let’s build and run your Docker container. It's time to get the engine running!
 
@@ -67,9 +63,5 @@ code-checks
 ```
 
 These will ensure that your code adheres to best practices and is properly formatted.
-
----
-
-And that’s it! 🚀 You’re now ready to start developing with Docker. If you need help, feel free to explore the docs or contact the team. Enjoy the ride! 😄
 
 ---
