@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    container_name: app
+    volumes:
+      - ./src:/src
+    environment:
+      - FASTAPI_PORT=8000
