@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
-ENV USER_NAME=dingus
-ENV PROJECT_NAME="CHAT-WITH-LOGS"
+ENV USER_NAME=user
+ENV PROJECT_NAME="project-name"
 
 # Update system dependencies
 RUN apt-get update \
