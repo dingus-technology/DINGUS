@@ -14,3 +14,4 @@ services:
       - ./src:/src
     environment:
       - FASTAPI_PORT=8000
+      - OPENAI_API_KEY=$OPENAI_API_KEY

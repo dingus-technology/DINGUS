@@ -12,9 +12,11 @@ app = FastAPI()
 
 app.include_router(chat_router)
 
+
 @app.get("/health")
 def health_controller():
     return {"status": "Healthy"}
+
 
 @app.get("/", include_in_schema=False)
 def docs_redirect_controller():
