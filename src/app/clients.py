@@ -16,7 +16,7 @@ class OpenAIChatClient:
         self.model = model
         self.client = OpenAI(api_key=api_key)
 
-    def chat(self, messages, temperature=0.0, max_tokens=1000):
+    def chat(self, messages, temperature=0.0, max_tokens=4000) -> str:
         """
         Send a chat message to the OpenAI API.
 
@@ -25,10 +25,13 @@ class OpenAIChatClient:
         :param max_tokens: The maximum number of tokens to generate in the response (default 500).
         :return: The assistant's response as a string.
         """
+        for message in messages:
+            if not isinstance(message, dict) or "role" not in message or "content" not in message:
+                raise ValueError(f"Invalid message structure: {message}")
         try:
             response = self.client.chat.completions.create(
                 model=self.model, messages=messages, temperature=temperature, max_tokens=max_tokens
             )
-            return response.choices[0].message.content.strip()
+            return str(response.choices[0].message.content.strip())
         except NameError as e:
             return f"Error during API call: {e}"
