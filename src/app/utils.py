@@ -1,6 +1,19 @@
 import csv
+import logging
 import sys
 import time
+
+
+def set_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        filename="/src/logs/app.log",
+        encoding="utf-8",
+        filemode="a",
+        format="{asctime} - {levelname} - {pathname}:{lineno} - {message}",
+        style="{",
+        datefmt="%Y-%m-%d %H:%M",
+    )
 
 
 def display_response(response: str, type_speed: float = 0.01):
@@ -28,5 +41,6 @@ def get_logs_data(LOG_DATA_FILE_PATH):
         header = next(csv_reader)
         log_data = [header]
         for row in csv_reader:
+            str(row).replace("\'\',", "")
             log_data.append(row)
         return log_data

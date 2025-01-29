@@ -2,6 +2,8 @@
 clients.py
 """
 
+import logging
+
 from openai import OpenAI
 
 
@@ -29,6 +31,7 @@ class OpenAIChatClient:
             if not isinstance(message, dict) or "role" not in message or "content" not in message:
                 raise ValueError(f"Invalid message structure: {message}")
         try:
+            logging.info(f"OpenAI call with {len(str(messages))} charatcters.")
             response = self.client.chat.completions.create(
                 model=self.model, messages=messages, temperature=temperature, max_tokens=max_tokens
             )

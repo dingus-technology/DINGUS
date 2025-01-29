@@ -1,8 +1,13 @@
+"""chat_with_logs.py
+
+This file lets you interact with a logs file like an AI agent.
+"""
+
 import os
 import sys
 
 from app.clients import OpenAIChatClient
-from app.utils import display_response, get_logs_data
+from app.utils import display_response, get_logs_data, set_logging
 
 
 class ChatWithLogs:
@@ -12,8 +17,8 @@ class ChatWithLogs:
         API_KEY = os.getenv("OPENAI_API_KEY")
         if not API_KEY:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
-        LOG_DATA_FILE_PATH = "data/log_data.csv"
-        TRUNCATE_LOGS = 100
+        LOG_DATA_FILE_PATH = "/src/data/log_data.csv"
+        TRUNCATE_LOGS = 1
 
         SUMMARY_PROMPT = """
         You are an expert in log analysis and debugging. Your task is to carefully analyse the provided
@@ -74,6 +79,7 @@ def main():
     """
     Main function to handle user interaction in the terminal.
     """
+    set_logging()
     sys.stdout.write(
         """
   _____ _____ _   _  _____ _    _  _____ 
