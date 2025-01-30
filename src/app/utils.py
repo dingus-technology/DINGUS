@@ -27,20 +27,26 @@ def display_response(response: str, type_speed: float = 0.01):
     sys.stdout.write("\n")
 
 
-def get_logs_data(LOG_DATA_FILE_PATH):
-    """_summary_
-
-    Args:
-        LOG_DATA_FILE_PATH (str): File path to the logs.
-
-    Returns:
-        list: The log data as a list.
+def get_logs_data(log_file_path: str, keep_headers: list[str] | None = None):
     """
-    with open(LOG_DATA_FILE_PATH, mode="r") as file:
+    Reads a CSV file and keeps only specified headers if provided.
+
+    :param log_file_path: Path to the log CSV file.
+    :param keep_headers: List of headers to keep. If None, keep all.
+    :return: Filtered log data as a list of lists.
+    """
+    with open(log_file_path, mode="r", encoding="utf-8") as file:
         csv_reader = csv.reader(file)
         header = next(csv_reader)
-        log_data = [header]
+
+        if keep_headers:
+            keep_indexes = [header.index(col) for col in keep_headers if col in header]
+            log_data = [[header[i] for i in keep_indexes]]
+        else:
+            keep_indexes = list(range(len(header)))
+            log_data = [header]
+
         for row in csv_reader:
-            str(row).replace("\'\',", "")
-            log_data.append(row)
-        return log_data
+            log_data.append([row[i] for i in keep_indexes])
+
+    return log_data

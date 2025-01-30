@@ -5,3 +5,4 @@ black==24.10.0
 mypy==1.14.1
 flake8==7.1.1
 openai==1.59.8
+pandas==2.2.3
