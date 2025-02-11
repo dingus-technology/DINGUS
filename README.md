@@ -1,75 +1,115 @@
 # 🚀 Chat with Logs
 
+Welcome to **Chat with Logs**, your AI-powered debugging assistant! This tool analyzes production logs, detects issues, and helps you debug like a pro. Whether you're a lead engineer guiding your team or a hobbyist fixing bugs, we've got your back.
 
 ---
 
-## 🛠️ Setup
+## 🛠️ Setup Guide
 
-### 1. Create Your `.env` File
+### 1️⃣ Create Your `.env` File
 
-To begin, create your `.env` file from the provided `sample.env`. This will store all your environment variables and secrets securely.
-
-Run the following command:
+Before we start, let's set up your environment variables. Copy the sample file:
 
 ```bash
 cp sample.env .env
 ```
 
-### 2. Make src/scripts Executable
+### 2️⃣ Make Scripts Executable
 
-Ensure that the src/scripts directory is executable. Run the following command:
+Ensure all scripts in `src/scripts/` are ready to roll:
 
 ```bash
 chmod +x src/scripts/*
 ```
 
-### 3. Install Docker
+### 3️⃣ Install Docker
 
-This codebase requires Docker to run. Development was done using Docker version 20.10.17. If you don't have Docker installed, you can grab it here: [Docker Installation](https://www.docker.com/).
+This project runs on **Docker**. If you haven't installed it yet, grab it [here](https://www.docker.com/). This was built using Docker **20.10.17**, but newer versions should work fine.
 
 ---
 
-## 🐋 Getting Started with Docker
+## 🐳 Running with Docker
 
-Now, let’s build and run your Docker container. It's time to get the engine running!
+Time to get this ship sailing! 🚢
 
-### 1. Build the Docker Image
+### 🏗️ 1. Build & Start the Docker Container
 
-First, build the Docker image by running:
+Run the following command to build and start everything:
 
 ```bash
 docker compose up --build
 ```
 
-This command will pull in all dependencies, build the image, and start the container.
+This will pull dependencies, build the image, and fire up the container.
 
-### 2. Access the App Container
+### 🛠️ 2. Enter the App Container
 
-To enter the container's bash shell, run:
+Need to peek inside the container? No problem!
 
 ```bash
 docker compose exec app bash
 ```
 
-Welcome inside! You're now in the heart of the Docker container, ready to execute commands, explore the environment, and start developing.
+Now you have full access to the running environment.
 
-### 3. Run Code Checks
+### ✅ 3. Run Code Checks
 
-Ensure your code is in top shape! Run the following commands to format and check your code:
+Keep your code clean and formatted:
 
 ```bash
 format-checks
 code-checks
 ```
 
-These will ensure that your code adheres to best practices and is properly formatted.
-
 ---
 
-# Chat With Logs
+## 💬 Chat with Logs CLI
 
-To run the chat cli:
+To start debugging via the command line:
 
 ```bash
 python app/chat_with_logs.py
 ```
+
+This will let you chat with your logs and uncover hidden bugs! 🕵️‍♂️
+
+---
+
+## 🎨 Running the Streamlit App
+
+Want a slick web UI instead? We've got you covered! 🚀
+
+### 🌍 1. Start the Streamlit App
+
+Run the following command inside the container:
+
+```bash
+docker compose up --build
+```
+
+### 🌐 2. Open in Your Browser
+
+Once it's running, head over to:
+
+```
+http://localhost:8501
+```
+or for FastAPI UI
+
+```
+http://localhost:8000
+```
+
+Enjoy the visual debugging experience!
+
+---
+
+## 📊 Data Sources
+
+- **Fake Data**: The app uses generated logs from `fake_data.py`. Feel free to tweak it!
+- **Log Data**: The real logs are stored in the `data/` folder. Modify or add your own logs for testing!
+
+---
+
+🔧 Happy Debugging! 🚀
+
