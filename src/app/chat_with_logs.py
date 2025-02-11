@@ -15,7 +15,7 @@ set_logging()
 class ChatWithLogs:
 
     def __init__(self):
-        LOG_DATA_FILE_PATH = "/src/data/log_data.csv"
+        LOG_DATA_FILE_PATH = "/src/data/kubernetes_logs.csv"
         TRUNCATE_LOGS = 100
         MODEL = "gpt-4o-mini"
         API_KEY = os.getenv("OPENAI_API_KEY")
@@ -23,13 +23,13 @@ class ChatWithLogs:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
         self.openai_client = OpenAIChatClient(api_key=API_KEY, model=MODEL)
         self.PROMPT_PREFIX = """
-            You are a debugging expert. Analyse the logs and report back
-            on anything interesting related to the user question.\n
-            Reply back as if you are talking to the user directly.\n
-            Do not tell the user something is hard or not possible - you must always do it.\n
-            The response will be put into a terminal so do not format it.\n
-            Keep the response short.\n
-            The user question is as follows:\n
+        You are a debugging expert. Analyse the logs and report back
+        on anything interesting related to the user question.\n
+        Reply back as if you are talking to the user directly.\n
+        Do not tell the user something is hard or not possible - you must always do it.\n
+        Format the response for markdown - you may use bullet points.\n
+        Keep the response short.\n\n
+        The user question is as follows:\n
         """
         HEADER_PROMPT = """
         You are an expert in log analysis and debugging. Your task is to carefully analyse the provided
@@ -64,11 +64,8 @@ class ChatWithLogs:
                 + str(get_logs_data(LOG_DATA_FILE_PATH)[0:15]).replace("'", "").replace(" ", "").replace("\\", ""),
             },
         ]
-        # headers = str(self.openai_client.chat(messages, max_tokens=1000))
-        # headers = headers.replace("```", "").replace("[","").replace("]","")
-        headers = """
-        insertId, jsonPayload.level, jsonPayload.message, jsonPayload.msg, logName, severity, textPayload, timestamp
-        """
+        headers = str(self.openai_client.chat(messages, max_tokens=1000))
+        headers = headers.replace("```", "").replace("[", "").replace("]", "")
         headers = [item.strip() for item in headers.split(",")]
 
         self.log_data = get_logs_data(LOG_DATA_FILE_PATH, headers)[0:TRUNCATE_LOGS]
@@ -105,23 +102,24 @@ def main():
     set_logging()
     sys.stdout.write(
         """
-  _____ _____ _   _  _____ _    _  _____ 
- |  __ \_   _| \ | |/ ____| |  | |/ ____|
- | |  | || | |  \| | |  __| |  | | (___  
- | |  | || | | .   | | |_ | |  | |\___ \ 
- | |__| || |_| |\  | |__| | |__| |____) |
- |_____/_____|_| \_|\_____|\____/|_____/ 
 
+██████╗ ██╗███╗   ██╗ ██████╗ ██╗   ██╗███████╗
+██╔══██╗██║████╗  ██║██╔════╝ ██║   ██║██╔════╝
+██║  ██║██║██╔██╗ ██║██║  ███╗██║   ██║███████╗
+██║  ██║██║██║╚██╗██║██║   ██║██║   ██║╚════██║
+██████╔╝██║██║ ╚████║╚██████╔╝╚██████╔╝███████║
+╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚══════╝
+ 
 """  # noqa  # Ignore all flake8 errors
     )
     chat_with_logs = ChatWithLogs()
     messages = []
 
-    sys.stdout.write("\n\nWelcome to the Debugging Assistant! Type your question below.")
+    sys.stdout.write("\n\nWelcome to the Debugging Assistant! Type your question below. ")
     sys.stdout.write("Type 'exit' to quit.\n")
 
     while True:
-        user_input = input("\nAsk a question about your logs: ")
+        user_input = input("\nAsk a question:\n\n ")
         if user_input.lower() == "exit":
             sys.stdout.write("Goodbye!")
             break

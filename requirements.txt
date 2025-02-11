@@ -6,3 +6,5 @@ mypy==1.14.1
 flake8==7.1.1
 openai==1.59.8
 pandas==2.2.3
+streamlit==1.42.0
+pydantic==2.10.6
