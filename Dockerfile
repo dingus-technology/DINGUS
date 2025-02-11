@@ -22,7 +22,7 @@ WORKDIR /src
 ENV ENV_PATH=/home/$USER_NAME/venv
 RUN python -m venv ${ENV_PATH}
 ENV PATH="$ENV_PATH/bin:$PATH" \
-    PYTHONPATH="${PYTHONPATH}:/src/app/"
+    PYTHONPATH="${PYTHONPATH}:/src/"
 
 # Copy over requirements
 COPY --chown=$USER_NAME:$USER_NAME requirements.txt /src/requirements.txt
@@ -46,6 +46,10 @@ RUN echo 'alias code-checks="/src/scripts/code-checks.sh"' >> /home/$USER_NAME/.
 
 # Custom Shell Prompt
 RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc
+
+
+EXPOSE 8000
+EXPOSE 8501
 
 # Set the entrypoint
 ENTRYPOINT ["/src/scripts/entrypoint.sh"]

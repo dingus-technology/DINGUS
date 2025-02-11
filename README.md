@@ -65,3 +65,11 @@ code-checks
 These will ensure that your code adheres to best practices and is properly formatted.
 
 ---
+
+# Chat With Logs
+
+To run the chat cli:
+
+```bash
+python app/chat_with_logs.py
+```

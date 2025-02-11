@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # secret vars
 .env
+
+data/
+logs/

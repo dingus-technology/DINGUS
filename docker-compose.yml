@@ -9,8 +9,13 @@ services:
         GID: ${GID}
     ports:
       - "${FASTAPI_PORT:-8000}:8000"
+      - "${STREAMLIT_PORT:-8501}:8501"
+
     container_name: app
     volumes:
       - ./src:/src
     environment:
       - FASTAPI_PORT=8000
+      - STREAMLIT_PORT=8501
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - CHAT_API_URL=$CHAT_API_URL
