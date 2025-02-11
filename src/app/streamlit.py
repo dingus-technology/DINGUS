@@ -1,55 +1,55 @@
 import os
 import time
 
+import pandas as pd
 import requests
 import streamlit as st
 
-# Load API URL from environment variable (set this in your .env file or deployment config)
-CHAT_API_URL = "http://host.docker.internal:8000"  # os.getenv("CHAT_API_URL")
+
+from app.fake_data import RESPONSE_TEXT, cpu_df, CAPTION
+from app.utils import stream_data
+        
+st.set_page_config(page_title="Chat with Dingus", page_icon="assets/logo-light.png")
+
+CHAT_API_URL = os.getenv("CHAT_API_URL")
 CHAT_API_ENDPOINT_URL = os.path.join(CHAT_API_URL, "chat")
 
-st.title("Chat with AI")
+st.title("Chat with Dingus 💬 ")
 
-# Initialize chat history if not present
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": "You are a helpful assistant."}]
+    st.session_state.messages = []
 
-# Display chat messages from history on app rerun
 for message in st.session_state.messages:
+    content = message["content"]
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        if isinstance(content, str):
+                st.write(content)
+        elif isinstance(content, pd.DataFrame):
+            st.line_chart(content)
 
-# Accept user input
-if prompt := st.chat_input("Ask me anything..."):
-    # Add user message to chat history
+if prompt := st.chat_input("How are my logs..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Display user message
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.write(prompt)
 
-    # Send chat history (excluding the latest user input) to FastAPI
-    response_text = "..."
-    try:
-        response = requests.post(CHAT_API_ENDPOINT_URL, json={"messages": st.session_state.messages})
-        response.raise_for_status()
-        response_text = response.json().get("response", "🤖 No response from Dingus.")
-        print(response_text)
-    except requests.exceptions.RequestException as e:
-        response_text = f"⚠️ Error: {str(e)}"
+    with st.spinner("Fetching..."):
+        try:
+            response = requests.post(CHAT_API_ENDPOINT_URL, json={"messages": st.session_state.messages})
+            response.raise_for_status()
+            response_text = response.json().get("response", "🤖 No response from Dingus.")
 
-    # Display assistant response with a typing effect
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()  # Create an empty container
-        response_so_far = ""  # Initialize response accumulator
+        except requests.exceptions.RequestException as e:
+            response_text = f"⚠️ Error: {str(e)}"
+        
+    assistant_message = [response_text, cpu_df, CAPTION]
 
-        # Replace newline characters with HTML <br> tag for new lines
-        response_text = response_text.replace("\n", "<br>")
+    with st.chat_message("assistant", avatar="assets/logo-light.png"):
+        
+        for content in assistant_message:
+            if isinstance(content, str):
+                st.write_stream(stream_data(content))
+            elif isinstance(content, pd.DataFrame):
+                st.line_chart(content)
 
-        for word in response_text.split():
-            response_so_far += word + " "  # Add word with space
-            message_placeholder.markdown(response_so_far, unsafe_allow_html=True)  # Update displayed text with HTML
-            time.sleep(0.05)  # Delay for typing effect
-
-    # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response_text})

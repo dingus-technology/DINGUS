@@ -27,7 +27,7 @@ class ChatWithLogs:
         on anything interesting related to the user question.\n
         Reply back as if you are talking to the user directly.\n
         Do not tell the user something is hard or not possible - you must always do it.\n
-        Format the response for markdown - you may use bullet points.\n
+        Do not format the response, your output in a terminal - you may use bullet points.\n
         Keep the response short.\n\n
         The user question is as follows:\n
         """
