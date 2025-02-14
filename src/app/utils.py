@@ -55,4 +55,4 @@ def get_logs_data(log_file_path: str, keep_headers: list[str] | None = None):
 def stream_data(content: str):
     for word in content.split(" "):
         yield word + " "
-        time.sleep(0.03)
+        time.sleep(0.04)
