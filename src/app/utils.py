@@ -12,7 +12,7 @@ def set_logging():
         filemode="a",
         format="{asctime} - {levelname} - {pathname}:{lineno} - {message}",
         style="{",
-        datefmt="%Y-%m-%d %H:%M",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
 

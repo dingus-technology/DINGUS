@@ -1,5 +1,4 @@
 import os
-import time
 
 import pandas as pd
 import requests
@@ -38,22 +37,19 @@ if prompt := st.chat_input("How are my logs..."):
 
     with st.spinner("Fetching..."):
         try:
-            time.sleep(8)
-            # response = requests.post(CHAT_API_ENDPOINT_URL, json={"messages": st.session_state.messages})
-            # response.raise_for_status()
-            # response_text = response.json().get("response", "🤖 No response from Dingus.")
+            response = requests.post(CHAT_API_ENDPOINT_URL, json={"messages": st.session_state.messages})
+            response.raise_for_status()
+            response_text = response.json().get("response", "🤖 No response from Dingus.")
 
         except requests.exceptions.RequestException as e:
             response_text = f"⚠️ Error: {str(e)}"
         except Exception as e:
             print(e)
 
-    assistant_message = [RESPONSE_TEXT, cpu_df, CAPTION, GRAFANA_LINK]
+    assistant_message = [response_text]
     for content in assistant_message:
         with st.chat_message("assistant", avatar=ASSISTANT_AVATAR_URL):
             if isinstance(content, str):
                 st.write_stream(stream_data(content))
-            elif isinstance(content, pd.DataFrame):
-                st.line_chart(content)
 
             st.session_state.messages.append({"role": "assistant", "content": content})

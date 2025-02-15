@@ -7,10 +7,9 @@ cpu_usage[30:35] += np.random.normal(loc=70, scale=15, size=5)
 cpu_df = pd.DataFrame({"Time": time_range, "CPU_Usage": cpu_usage})
 cpu_df.set_index("Time", inplace=True)
 
-GRRAFAN_LINK = "#### [Click here to see the incident in Grafana 📈](http://localhost:3000/explore?schemaVersion=1&panes=%7B%22qyv%22:%7B%22datasource%22:%22ced0tisnw1v5se%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22cpu_load%7Bjob%3D%5C%22sanitised-data%5C%22%7D%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22ced0tisnw1v5se%22%7D,%22editorMode%22:%22builder%22,%22legendFormat%22:%22__auto%22,%22useBackend%22:false,%22disableTextWrap%22:false,%22fullMetaSearch%22:false,%22includeNullMetadata%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-15m%22,%22to%22:%22now%22%7D%7D%7D&orgId=1)"
+GRAFANA_LINK = "#### [Click here to see the incident in Grafana 📈](http://localhost:3000/explore?schemaVersion=1&panes=%7B%22qyv%22:%7B%22datasource%22:%22ced0tisnw1v5se%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22cpu_load%7Bjob%3D%5C%22sanitised-data%5C%22%7D%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22ced0tisnw1v5se%22%7D,%22editorMode%22:%22builder%22,%22legendFormat%22:%22__auto%22,%22useBackend%22:false,%22disableTextWrap%22:false,%22fullMetaSearch%22:false,%22includeNullMetadata%22:true%7D%5D,%22range%22:%7B%22from%22:%221739546427757%22,%22to%22:%221739546531881%22%7D%7D%7D&orgId=1)"
 
-RESPONSE_TEXT = """
-### 🚨 **Critical CPU Issue Detected!** 🚨
+RESPONSE_TEXT = """### 🚨 **Critical CPU Issue Detected!** 🚨
 
 🔴 **System:** Production-Server-01  
 ⚠️ **Alert Level:** Critical  
