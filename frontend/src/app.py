@@ -4,18 +4,19 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from app.fake_data import CAPTION, GRAFANA_LINK, RESPONSE_TEXT, cpu_df
-from app.utils import stream_data
+from src.utils import stream_data
 
-st.set_page_config(page_title="Chat with Dingus", page_icon="assets/logo-light.png")
+st.set_page_config(page_title="Chat with Dingus", page_icon="/assets/logo-light.png")
 
 CHAT_API_URL = os.getenv("CHAT_API_URL")
 CHAT_API_ENDPOINT_URL = os.path.join(CHAT_API_URL, "chat")
-ASSISTANT_AVATAR_URL = "assets/logo-light.png"
+ASSISTANT_AVATAR_URL = "/assets/logo-light.png"
+
 st.title("Chat with Dingus 💬 ")
 st.text(
     "Dingus will identify issues, find causes and provide actions for problems that currently exist in your infrastructure."
 )
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
