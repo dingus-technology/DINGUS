@@ -7,7 +7,7 @@ import time
 def set_logging():
     logging.basicConfig(
         level=logging.INFO,
-        filename="/src/logs/app.log",
+        filename="/logs/dingus.log",
         encoding="utf-8",
         filemode="a",
         format="{asctime} - {levelname} - {pathname}:{lineno} - {message}",
@@ -52,7 +52,4 @@ def get_logs_data(log_file_path: str, keep_headers: list[str] | None = None):
     return log_data
 
 
-def stream_data(content: str):
-    for word in content.split(" "):
-        yield word + " "
-        time.sleep(0.04)
+

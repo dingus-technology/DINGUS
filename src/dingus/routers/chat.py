@@ -4,8 +4,8 @@ Chat endpoint in the FastAPI
 
 from fastapi import APIRouter, Depends, status
 
-from app.chat_with_logs import ChatWithLogs
-from app.schemas import ChatRequest, ChatResponse
+from dingus.chat_with_logs import ChatWithLogs
+from dingus.schemas import ChatRequest, ChatResponse
 
 router = APIRouter(tags=["chat"])
 

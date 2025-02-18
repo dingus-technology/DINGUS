@@ -6,7 +6,7 @@ Main FastAPI entrypoint
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse
 
-from app.routers.chat import router as chat_router
+from dingus.routers.chat import router as chat_router
 
 app = FastAPI()
 

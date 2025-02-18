@@ -14,12 +14,12 @@ Before we start, let's set up your environment variables. Copy the sample file:
 cp sample.env .env
 ```
 
-### 2️⃣ Make Scripts Executable
+### 2️⃣ Usine colima
 
-Ensure all scripts in `src/scripts/` are ready to roll:
+If running on mac, use colima for reduced overheads rather that Docker Desktop
 
 ```bash
-chmod +x src/scripts/*
+colima start
 ```
 
 ### 3️⃣ Install Docker
@@ -101,13 +101,6 @@ http://localhost:8000
 ```
 
 Enjoy the visual debugging experience!
-
----
-
-## 📊 Data Sources
-
-- **Fake Data**: The app uses generated logs from `fake_data.py`. Feel free to tweak it!
-- **Log Data**: The real logs are stored in the `data/` folder. Modify or add your own logs for testing!
 
 ---
 

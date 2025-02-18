@@ -1,0 +1,46 @@
+FROM python:3.11-slim
+
+ENV USER_NAME=frontend
+ENV PROJECT_NAME="CHAT-WITH-LOGS"
+
+# Update system dependencies
+RUN apt-get update \
+    && apt-get install -y dos2unix \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+ARG UID=1000
+ARG GID=1001
+RUN groupadd -g ${GID} $USER_NAME && \
+    useradd -m -u ${UID} --gid ${GID} $USER_NAME
+
+USER $USER_NAME
+
+WORKDIR /frontend
+
+ENV ENV_PATH=/home/$USER_NAME/venv
+RUN python -m venv ${ENV_PATH}
+ENV PATH="$ENV_PATH/bin:$PATH" \
+    PYTHONPATH="${PYTHONPATH}:/"
+
+# Copy and install dependencies
+COPY --chown=$USER_NAME:$USER_NAME /requirements/frontend.txt /frontend/requirements.txt
+RUN pip install --upgrade pip && pip install -r /frontend/requirements.txt
+
+# Copy source code
+COPY --chown=$USER_NAME:$USER_NAME ./scripts /frontend/scripts
+COPY --chown=$USER_NAME:$USER_NAME ./frontend/entrypoint.sh /frontend/scripts/entrypoint.sh
+COPY --chown=$USER_NAME:$USER_NAME ./assets /frontend/assets
+
+# Add aliases
+RUN echo 'alias format-checks="bash /frontend/scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias code-checks="bash /frontend/scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
+
+# Custom shell prompt
+RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc
+
+EXPOSE 8501
+
+ENTRYPOINT ["bash", "/frontend/entrypoint.sh"]
+

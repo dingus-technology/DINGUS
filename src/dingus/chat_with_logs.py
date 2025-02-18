@@ -8,8 +8,8 @@ import sys
 
 from fastapi import HTTPException, status
 
-from app.clients import OpenAIChatClient
-from app.utils import display_response, get_logs_data, set_logging
+from dingus.clients import OpenAIChatClient
+from dingus.utils import display_response, get_logs_data, set_logging
 
 set_logging()
 
@@ -19,7 +19,7 @@ GRAFANA_LINK = "http://localhost:3000/explore?schemaVersion=1&panes=%7B%22tk1%22
 class ChatWithLogs:
 
     def __init__(self):
-        self.LOG_DATA_FILE_PATH = "/src/data/k8_cpu.csv"
+        self.LOG_DATA_FILE_PATH = "/data/k8_cpu.csv"
         self.TRUNCATE_LOGS = 100
         MODEL = "gpt-4o-mini"
         API_KEY = os.getenv("OPENAI_API_KEY")
@@ -99,7 +99,7 @@ class ChatWithLogs:
             {"role": "user", "content": self.SUMMARY_PROMPT + str(self.log_data)},
         ]
         self.SUMMARY_INFO = self.openai_client.chat(messages, max_tokens=1000)
-        with open("/src/data/summary_info.txt", "w") as f:
+        with open("/data/summary_info.txt", "w") as f:
             f.write(self.SUMMARY_INFO)
 
     def generate_response(self, messages: list | None = None) -> list[str, str]:

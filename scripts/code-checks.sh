@@ -2,7 +2,7 @@
 # code-checks.sh
 
 LINE_LENGTH=120
-APP_DIR="/src"
+APP_DIR="/"
 
 # Color variables
 RED='\033[0;31m'
