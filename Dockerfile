@@ -41,8 +41,8 @@ RUN chmod +x /src/scripts/
 RUN dos2unix /src/scripts/
 
 # Add aliases for scripts
-RUN echo 'alias format-checks="/src/scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
-RUN echo 'alias code-checks="/src/scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias format-checks="bash /src/scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias code-checks="bash /src/scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
 
 # Custom Shell Prompt
 RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc
@@ -52,4 +52,4 @@ EXPOSE 8000
 EXPOSE 8501
 
 # Set the entrypoint
-ENTRYPOINT ["/src/scripts/entrypoint.sh"]
+ENTRYPOINT ["bash", "/src/scripts/entrypoint.sh"]

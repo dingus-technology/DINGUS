@@ -15,6 +15,7 @@ set_logging()
 
 GRAFANA_LINK = "http://localhost:3000/explore?schemaVersion=1&panes=%7B%22tk1%22:%7B%22datasource%22:%22ced0tisnw1v5se%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22cpu_load%7Bjob%3D%5C%22sanitised-data%5C%22%7D%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22ced0tisnw1v5se%22%7D,%22editorMode%22:%22builder%22,%22legendFormat%22:%22__auto%22,%22useBackend%22:false,%22disableTextWrap%22:false,%22fullMetaSearch%22:false,%22includeNullMetadata%22:true%7D%5D,%22range%22:%7B%22from%22:%221739652035626%22,%22to%22:%221739653840297%22%7D%7D%7D&orgId=1"
 
+
 class ChatWithLogs:
 
     def __init__(self):
@@ -98,8 +99,8 @@ class ChatWithLogs:
             {"role": "user", "content": self.SUMMARY_PROMPT + str(self.log_data)},
         ]
         self.SUMMARY_INFO = self.openai_client.chat(messages, max_tokens=1000)
-        with open('/src/data/summary_info.txt', 'w') as f:
-                f.write(self.SUMMARY_INFO)
+        with open("/src/data/summary_info.txt", "w") as f:
+            f.write(self.SUMMARY_INFO)
 
     def generate_response(self, messages: list | None = None) -> list[str, str]:
         """
@@ -126,7 +127,7 @@ class ChatWithLogs:
             messages[-1] = {"role": "user", "content": f"{self.PROMPT_PREFIX} {user_input}"}
             response = self.openai_client.chat(messages)
             messages.append({"role": "assistant", "content": response})
-            
+
         return messages
 
 

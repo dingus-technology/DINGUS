@@ -2,7 +2,6 @@
 This file will produce a link a Grafana dashboard.
 """
 
-
 import json
 import time
 import urllib.parse
