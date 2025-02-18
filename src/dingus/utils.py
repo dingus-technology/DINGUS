@@ -50,6 +50,3 @@ def get_logs_data(log_file_path: str, keep_headers: list[str] | None = None):
             log_data.append([row[i] for i in keep_indexes])
 
     return log_data
-
-
-

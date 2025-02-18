@@ -17,30 +17,34 @@ RUN groupadd -g ${GID} $USER_NAME && \
 
 USER $USER_NAME
 
-WORKDIR /frontend
+WORKDIR /src
 
 ENV ENV_PATH=/home/$USER_NAME/venv
 RUN python -m venv ${ENV_PATH}
 ENV PATH="$ENV_PATH/bin:$PATH" \
-    PYTHONPATH="${PYTHONPATH}:/"
+    PYTHONPATH="${PYTHONPATH}:/src/:/"
 
 # Copy and install dependencies
-COPY --chown=$USER_NAME:$USER_NAME /requirements/frontend.txt /frontend/requirements.txt
-RUN pip install --upgrade pip && pip install -r /frontend/requirements.txt
+COPY --chown=$USER_NAME:$USER_NAME /requirements/frontend.txt /src/requirements.txt
+RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 
 # Copy source code
-COPY --chown=$USER_NAME:$USER_NAME ./scripts /frontend/scripts
-COPY --chown=$USER_NAME:$USER_NAME ./frontend/entrypoint.sh /frontend/scripts/entrypoint.sh
-COPY --chown=$USER_NAME:$USER_NAME ./assets /frontend/assets
+COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/
+COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
+COPY --chown=$USER_NAME:$USER_NAME ./assets /src/assets
 
 # Add aliases
-RUN echo 'alias format-checks="bash /frontend/scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
-RUN echo 'alias code-checks="bash /frontend/scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias code-checks="bash /scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
+
+# Ensure scripts have execute permissions
+RUN chmod +x /scripts/
+RUN dos2unix /scripts/
 
 # Custom shell prompt
 RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc
 
 EXPOSE 8501
 
-ENTRYPOINT ["bash", "/frontend/entrypoint.sh"]
+ENTRYPOINT ["bash", "/src/entrypoint.sh"]
 

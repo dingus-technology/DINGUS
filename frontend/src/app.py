@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from frontend.utils import stream_data
+from src.utils import stream_data
 
 st.set_page_config(page_title="Chat with Dingus", page_icon="/assets/logo-light.png")
 
