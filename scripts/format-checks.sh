@@ -3,7 +3,7 @@
 # Code formatting tool
 
 LINE_LENGTH=120
-APP_DIR="/"
+APP_DIR="/src"
 
 echo "Sorting imports with isort..."
 isort --profile black $APP_DIR

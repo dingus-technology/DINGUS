@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-ENV USER_NAME=dingus
+ENV USER_NAME=frontend
 ENV PROJECT_NAME="CHAT-WITH-LOGS"
 
 # Update system dependencies
@@ -15,9 +15,6 @@ ARG GID=1001
 RUN groupadd -g ${GID} $USER_NAME && \
     useradd -m -u ${UID} --gid ${GID} $USER_NAME
 
-# Make dirs and change owner 
-RUN mkdir /logs /data && chown -R $USER_NAME:$USER_NAME /logs /data
-
 USER $USER_NAME
 
 WORKDIR /src
@@ -25,33 +22,29 @@ WORKDIR /src
 ENV ENV_PATH=/home/$USER_NAME/venv
 RUN python -m venv ${ENV_PATH}
 ENV PATH="$ENV_PATH/bin:$PATH" \
-    PYTHONPATH="${PYTHONPATH}:/src/"
+    PYTHONPATH="${PYTHONPATH}:/src/:/"
 
 # Copy and install dependencies
-COPY --chown=$USER_NAME:$USER_NAME /requirements/dingus.txt /src/requirements.txt
+COPY --chown=$USER_NAME:$USER_NAME /frontend/requirements.txt /src/requirements.txt
 RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 
 # Copy source code
-COPY --chown=$USER_NAME:$USER_NAME ./data /data/ \
-    ./scripts /scripts/ \
-    ./logs /logs/ \
-    ./src /src/ \
-    ./assets /assets/
-
-COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh 
-
-# Ensure scripts have execute permissions
-RUN chmod +x /scripts/
-RUN dos2unix /scripts/
+COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/
+COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
+COPY --chown=$USER_NAME:$USER_NAME ./assets /src/assets
 
 # Add aliases
 RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
 RUN echo 'alias code-checks="bash /scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
 
+# Ensure scripts have execute permissions
+RUN chmod +x /scripts/
+RUN dos2unix /scripts/
+
 # Custom shell prompt
 RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc
 
-# Expose port
-EXPOSE 8000
+EXPOSE 8501
 
 ENTRYPOINT ["bash", "/src/entrypoint.sh"]
+
