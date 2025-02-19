@@ -47,7 +47,11 @@ This will pull dependencies, build the image, and fire up the container.
 Need to peek inside the container? No problem!
 
 ```bash
-docker compose exec app bash
+docker compose exec <SERVICE NAME> bash
+```
+i.e.
+```bash
+docker compose exec dingus bash
 ```
 
 Now you have full access to the running environment.
@@ -68,7 +72,8 @@ code-checks
 To start debugging via the command line:
 
 ```bash
-python app/chat_with_logs.py
+docker compose exec dingus bash
+python dingus/run.py
 ```
 
 This will let you chat with your logs and uncover hidden bugs! 🕵️‍♂️
