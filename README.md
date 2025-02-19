@@ -1,5 +1,7 @@
 # 🚀 Chat with Logs
 
+![Chat With Logs Film](assets/chat_with_logs_film.gif)
+
 Welcome to **Chat with Logs**, your AI-powered debugging assistant! This tool analyzes production logs, detects issues, and helps you debug like a pro. Whether you're a lead engineer guiding your team or a hobbyist fixing bugs, we've got your back.
 
 ---
