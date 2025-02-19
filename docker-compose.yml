@@ -2,7 +2,7 @@ services:
   dingus:
     build:
       context: .
-      dockerfile: docker/Dockerfile.dingus
+      dockerfile: Dockerfile.dingus
       args:
         UID: ${UID}
         GID: ${GID}
@@ -14,7 +14,7 @@ services:
       - ./data:/data
       - ./logs:/logs
       - ./assets:/assets
-      - ./srcripts:/scripts
+      - ./scripts:/scripts
     environment:
       - FASTAPI_PORT=8000
       - OPENAI_API_KEY=$OPENAI_API_KEY
@@ -23,7 +23,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: docker/Dockerfile.frontend
+      dockerfile: frontend/Dockerfile.frontend
       args:
         UID: ${UID}
         GID: ${GID}
@@ -35,7 +35,7 @@ services:
       - ./data:/data
       - ./logs:/logs
       - ./assets:/assets
-      - ./srcripts:/scripts
+      - ./scripts:/scripts
     environment:
       - STREAMLIT_PORT=8501
       - CHAT_API_URL=$CHAT_API_URL

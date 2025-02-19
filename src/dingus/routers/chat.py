@@ -17,7 +17,7 @@ def get_chat_with_logs():
 
 
 @router.post("/chat", response_model=ChatResponse, responses={status.HTTP_400_BAD_REQUEST: {}})
-def chat_controller(request: ChatRequest, chat_with_logs: ChatWithLogs = Depends(get_chat_with_logs)) -> str:
+def chat_controller(request: ChatRequest, chat_with_logs: ChatWithLogs = Depends(get_chat_with_logs)) -> ChatResponse:
     messages: list[dict[str, str]] = request.messages
 
     messages = chat_with_logs.generate_response(messages=messages)
