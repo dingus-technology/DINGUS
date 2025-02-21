@@ -6,6 +6,8 @@ import logging
 
 from openai import OpenAI
 
+logger = logging.getLogger(__name__)
+
 MODEL_PRICING = {
     "gpt-4o": {"input": 0.005, "output": 0.015},
     "gpt-4-turbo": {"input": 0.01, "output": 0.03},
@@ -37,7 +39,7 @@ class OpenAIChatClient:
         pricing = MODEL_PRICING.get(self.model, {"input": 0.01, "output": 0.03})
         cost = (input_tokens / 1000 * pricing["input"]) + (output_tokens / 1000 * pricing["output"])
 
-        logging.info(
+        logger.info(
             f"OpenAI API Cost: ${cost:.4f} | Model: {self.model} | "
             f"Input Tokens: {input_tokens} | Output Tokens: {output_tokens} | Total Tokens: {total_tokens}"
         )
@@ -56,7 +58,7 @@ class OpenAIChatClient:
                 raise ValueError(f"Invalid message structure: {message}")
 
         try:
-            logging.info(f"OpenAI call with {len(str(messages))} characters.")
+            logger.info(f"OpenAI call with {len(str(messages))} characters.")
 
             response = self.client.chat.completions.create(
                 model=self.model, messages=messages, temperature=temperature, max_tokens=max_tokens
@@ -65,5 +67,5 @@ class OpenAIChatClient:
             content = response.choices[0].message.content if response.choices[0].message.content is not None else ""
             return content.strip()
         except Exception as e:
-            logging.error(f"Error during API call: {e}")
+            logger.error(f"Error during API call: {e}")
             return f"Error during API call: {e}"

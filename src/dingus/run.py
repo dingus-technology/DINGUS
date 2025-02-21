@@ -5,16 +5,15 @@ Contains the CLI for the Dingus chatbot."""
 import sys
 
 from dingus.chat_with_logs import ChatWithLogs
-from dingus.utils import display_response, set_logging
-
-set_logging()
+from dingus.logger import set_logging
+from dingus.utils import display_response
 
 
 def main():
     """
     Main function to handle user interaction in the terminal.
     """
-    set_logging()
+    set_logging(to_stdout=False)
     sys.stdout.write(
         """
 
