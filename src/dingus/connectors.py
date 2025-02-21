@@ -105,11 +105,19 @@ if __name__ == "__main__":
     limit = 50
     search_word = None
 
-    streams = fetch_loki_logs(loki_base_url, job_name, start_time, end_time, level, limit, search_word)
+    streams = fetch_loki_logs(
+        loki_base_url=loki_base_url,
+        job_name=job_name,
+        start_time=start_time,
+        end_time=end_time,
+        limit=limit,
+        level=level,
+        search_word=search_word,
+    )
 
     if streams:
         with open("/data/loki_stream.json", mode="w") as file:
             json.dump(streams, file, indent=4)
-        logger.info(f"Written streams to file.")
+        logger.info("Written streams to file.")
     else:
         logger.error("No streams to write.")
