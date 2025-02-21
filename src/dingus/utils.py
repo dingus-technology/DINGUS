@@ -2,18 +2,9 @@ import csv
 import logging
 import sys
 import time
+from datetime import datetime
 
-
-def set_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        filename="/logs/dingus.log",
-        encoding="utf-8",
-        filemode="a",
-        format="{asctime} - {levelname} - {pathname}:{lineno} - {message}",
-        style="{",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
+logger = logging.getLogger(__name__)
 
 
 def display_response(response: str, type_speed: float = 0.01):
@@ -50,3 +41,21 @@ def get_logs_data(log_file_path: str, keep_headers: list[str] | None = None):
             log_data.append([row[i] for i in keep_indexes])
 
     return log_data
+
+
+def datetime_to_timestamp(datetime_str: str) -> int | None:
+    """
+    Converts a datetime string to a Unix timestamp.
+
+    Args:
+        datetime_str (str): The datetime string in the format "%Y-%m-%d %H:%M:%S".
+
+    Returns:
+        int: The Unix timestamp, or None if conversion fails.
+    """
+    try:
+        dt_obj = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        return int(dt_obj.timestamp())
+    except ValueError as e:
+        logger.error(f"Error converting datetime to timestamp: {e}")
+        return None

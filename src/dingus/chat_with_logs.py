@@ -15,9 +15,7 @@ from dingus.prompts import (
     SUMMARY_PROMPT,
     SYSTEM_PROMPT,
 )
-from dingus.utils import get_logs_data, set_logging
-
-set_logging()
+from dingus.utils import get_logs_data
 
 
 class ChatWithLogs:

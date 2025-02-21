@@ -8,7 +8,10 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from dingus.logger import set_logging
 from dingus.routers.chat import router as chat_router
+
+set_logging()
 
 APP_TITLE = "DINGUS | Chat with Logs"
 
