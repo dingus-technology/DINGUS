@@ -13,7 +13,13 @@ LOKI_QUERY_RANGE_ENDPOINT = "/loki/api/v1/query_range"
 
 
 def fetch_loki_logs(
-    loki_base_url: str, job_name: str, start_time: str, end_time: str, limit: int = 100, level: str | None = None
+    loki_base_url: str,
+    job_name: str,
+    start_time: str,
+    end_time: str,
+    limit: int = 100,
+    level: str | None = None,
+    search_word: str | None = None,
 ) -> list[dict] | None:
     """
     Fetch logs from the Loki API within a specified time range and for a specific job.
@@ -25,6 +31,7 @@ def fetch_loki_logs(
         end_time (str): The end time in "%Y-%m-%d %H:%M:%S" format.
         limit (int): The maximum number of log entries to retrieve. Defaults to 100. Max 5000.
         level (str): The log level to filter by. Defaults to "info".
+        search_word (str): The search word to filter by.
 
     Returns:
     list[dict]: A list of log entries in the format:
@@ -52,8 +59,12 @@ def fetch_loki_logs(
         logger.error("Invalid time format, cannot fetch logs.")
         return None
 
+    level_filter = f' | level="{level}"' if level else ""
+    search_filter = f' |~ "(?i){search_word}"' if search_word else ""
+    logQL = f'{{job="{job_name}"}}{level_filter}{search_filter}'
+
     params = {
-        "query": f'{{job="{job_name}"}}',
+        "query": logQL,
         "start": start_time_ts,
         "end": end_time_ts,
         "limit": limit,
@@ -70,12 +81,7 @@ def fetch_loki_logs(
 
     try:
         data = response.json()
-
-        result = data.get("data", {}).get("result", [])
-
-        if not level:
-            return result
-        return [stream for stream in result if stream.get("stream", {}).get("level") == level]
+        return data.get("data", {}).get("result", [])
 
     except ValueError as e:
         logger.error(f"Error in JSON from Loki: {e}")
@@ -86,6 +92,7 @@ def fetch_loki_logs(
 
 if __name__ == "__main__":
     import json
+
     from dingus.logger import set_logging
 
     set_logging()
@@ -94,8 +101,11 @@ if __name__ == "__main__":
     end_time = "2025-02-21 15:34:56"
     job_name = "cpu_monitor"
     loki_base_url = os.getenv("LOKI_URL", "http://localhost:3100")
+    level = None
+    limit = 50
+    search_word = None
 
-    streams = fetch_loki_logs(loki_base_url, job_name, start_time, end_time, level="error", limit=5000)
+    streams = fetch_loki_logs(loki_base_url, job_name, start_time, end_time, level, limit, search_word)
 
     if streams:
         with open("/data/loki_stream.json", mode="w") as file:
