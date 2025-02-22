@@ -10,10 +10,9 @@ from fastapi.staticfiles import StaticFiles
 
 from dingus.logger import set_logging
 from dingus.routers.chat import router as chat_router
+from dingus.settings import APP_TITLE
 
 set_logging()
-
-APP_TITLE = "DINGUS | Chat with Logs"
 
 app = FastAPI(docs_url=None, redoc_url=None, title=APP_TITLE)
 app.include_router(chat_router)
