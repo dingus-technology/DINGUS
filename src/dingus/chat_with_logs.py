@@ -15,18 +15,24 @@ from dingus.prompts import (
     SUMMARY_PROMPT,
     SYSTEM_PROMPT,
 )
+from dingus.settings import (
+    LOG_DATA_FILE_PATH,
+    OPENAI_API_KEY,
+    OPENAI_MODEL,
+    TRUNCATE_LOGS,
+)
 from dingus.utils import get_logs_data
-from dingus.settings import OPENAI_API_KEY, OPENAI_MODEL, LOG_DATA_FILE_PATH, TRUNCATE_LOGS
+
 
 class ChatWithLogs:
 
     def __init__(self):
         self.LOG_DATA_FILE_PATH = LOG_DATA_FILE_PATH
         self.TRUNCATE_LOGS = TRUNCATE_LOGS
-        
+
         if not OPENAI_API_KEY:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
-        
+
         self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
 
     def get_log_summary(self):

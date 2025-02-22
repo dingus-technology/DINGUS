@@ -2,6 +2,7 @@
 
 Settings for the Dingus app.
 """
+
 import os
 
 MODEL_PRICING = {

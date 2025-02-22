@@ -4,10 +4,11 @@ from urllib.parse import urljoin
 
 import requests  # type: ignore
 
-from dingus.utils import datetime_to_timestamp
 from dingus.settings import LOKI_QUERY_RANGE_ENDPOINT
+from dingus.utils import datetime_to_timestamp
 
 logger = logging.getLogger(__name__)
+
 
 def build_loki_query(level: str | None = None, search_word: str | None = None, job_name: str = "cpu_monitor") -> str:
     """
@@ -17,7 +18,7 @@ def build_loki_query(level: str | None = None, search_word: str | None = None, j
         level (str): The log level to filter by. Defaults to None.
         search_word (str): The search word to filter by. Defaults to None.
         job_name (str): The job name to query for logs. Defaults to "cpu_monitor".
-    
+
     Returns:
         str: The Loki query string.
     """
@@ -26,6 +27,7 @@ def build_loki_query(level: str | None = None, search_word: str | None = None, j
     search_filter = f' |~ "(?i){search_word}"' if search_word else ""
     logQL = f'{{job="{job_name}"}} | json {level_filter}{search_filter}'
     return logQL
+
 
 def fetch_loki_logs(
     loki_base_url: str,

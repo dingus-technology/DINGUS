@@ -2,11 +2,12 @@
 Chat endpoint in the FastAPI
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, status
 
 from dingus.chat_with_logs import ChatWithLogs
 from dingus.schemas import ChatRequest, ChatResponse
-import logging
 
 router = APIRouter(tags=["chat"])
 
