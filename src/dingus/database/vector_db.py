@@ -5,10 +5,10 @@ This script creates a new collection in Qdrant instance.
 
 import logging
 
-import numpy as np
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
-
+import json
 from dingus.database.processors import generate_embeddings
 from dingus.settings import QDRANT_HOST
 
@@ -24,7 +24,40 @@ class QdrantDatabaseClient:
         self.collection_name = collection_name
         self.qdrant_client = QdrantClient(self.QDRANT_HOST)
 
+        self.setup()
+
+    def setup(self):
+         # TODO: get direct from logs API.
+        # with open("data/loki_stream_5k.json") as f:
+            # logs = json.load(f)
+        logs = [
+            {
+                "stream": {
+                    "filename": "sanitised_data.py",
+                    "job": "cpu_monitor",
+                    "level": "WARNING",
+                    "line": "64",
+                    "logger": "cpu_monitor_logger",
+                    "message": "High CPU load detected",
+                    "service": "monitoring-app",
+                    "service_name": "monitoring-app",
+                    "severity": "warning",
+                    "timestamp": "2025-02-21 15:12:20",
+                },
+                "values": [
+                    [
+                        "1740150740271497984",
+                        '{"timestamp": "2025-02-21 15:12:20", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
+                    ]
+                ],
+            },
+        ]
+
+        data = [log.get("stream",{}).get("message", None) for log in logs]
+        payloads = [log.get("stream",{}) for log in logs]
+
         self.create_collection()
+        self.upsert(data_to_embed=data, payloads=payloads)
 
     def create_collection(self):
         """
@@ -81,7 +114,7 @@ class QdrantDatabaseClient:
         logger.info(f"Searching for '{query_text}' in collection '{collection_name}'.")
         if collection_name is None:
             collection_name = self.collection_name
-        query_embedding = generate_embeddings(query_text)
+        query_embedding = generate_embeddings([query_text])[0]
 
         search_results = self.qdrant_client.search(
             collection_name=collection_name, query_vector=query_embedding, limit=limit, with_payload=True

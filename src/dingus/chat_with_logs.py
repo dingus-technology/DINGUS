@@ -7,8 +7,7 @@ import logging
 
 from fastapi import HTTPException, status
 
-from dingus.clients import OpenAIChatClient
-from dingus.database.vector_db import QdrantDatabaseClient
+from dingus.clients import OpenAIChatClient, qdrant_client
 from dingus.prompts import (
     FORMAT_RESPONSE,
     HEADER_PROMPT,
@@ -26,55 +25,6 @@ from dingus.settings import (
 from dingus.utils import get_logs_data
 
 logger = logging.getLogger(__name__)
-logs = [
-    {
-        "stream": {
-            "filename": "sanitised_data.py",
-            "job": "cpu_monitor",
-            "level": "WARNING",
-            "line": "64",
-            "logger": "cpu_monitor_logger",
-            "message": "High CPU load detected",
-            "service": "monitoring-app",
-            "service_name": "monitoring-app",
-            "severity": "warning",
-            "timestamp": "2025-02-21 15:12:23",
-        },
-        "values": [
-            [
-                "1740150743368291840",
-                '{"timestamp": "2025-02-21 15:12:23", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
-            ]
-        ],
-    },
-    {
-        "stream": {
-            "filename": "sanitised_data.py",
-            "job": "cpu_monitor",
-            "level": "WARNING",
-            "line": "64",
-            "logger": "cpu_monitor_logger",
-            "message": "High CPU load detected",
-            "service": "monitoring-app",
-            "service_name": "monitoring-app",
-            "severity": "warning",
-            "timestamp": "2025-02-21 15:12:20",
-        },
-        "values": [
-            [
-                "1740150740271497984",
-                '{"timestamp": "2025-02-21 15:12:20", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
-            ]
-        ],
-    },
-]
-
-
-def get_qdrant_client():
-    if not hasattr(get_qdrant_client, "instance"):
-        # get_qdrant_client.instance = QdrantDatabaseClient().upsert(data=logs)
-        logging.info("QdrantClient instance created")
-    return get_qdrant_client.instance
 
 
 class ChatWithLogs:
@@ -87,23 +37,25 @@ class ChatWithLogs:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
         self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
-
-        self.qdrant_client = get_qdrant_client()
+        self.qdrant_client = qdrant_client
 
     def get_vector_db_summary(self):
         """
         Generate a summary of the vector database.
         """
 
-        vector_search = self.qdrant_client.search(["High CPU load detected"])
+        vector_search = self.qdrant_client.search(collection_name='logs_index', query_text="High CPU load detected")
 
         messages = [
             SYSTEM_PROMPT,
             {"role": "user", "content": VECTOR_DB_PROMPT + str(vector_search)},
         ]
-        self.VECTOR_DB_SUMMARY = self.openai_client.chat(messages, max_tokens=1000)
+
+        logger.debug(f"Vector search: {vector_search}")
+
+        self.SUMMARY_INFO = self.openai_client.chat(messages, max_tokens=1000)
         with open("/data/vector_db_summary.txt", "w") as f:
-            f.write(self.VECTOR_DB_SUMMARY)
+            f.write(self.SUMMARY_INFO)
 
     def get_log_summary(self):
         """
@@ -121,7 +73,8 @@ class ChatWithLogs:
         headers = headers.replace("```", "").replace("[", "").replace("]", "")
         headers = [item.strip() for item in headers.split(",")]
 
-        self.log_data = get_logs_data(self.LOG_DATA_FILE_PATH, headers)[0 : self.TRUNCATE_LOGS]  # noqa: E203
+        self.
+        = get_logs_data(self.LOG_DATA_FILE_PATH, headers)[0 : self.TRUNCATE_LOGS]  # noqa: E203
 
         messages = [
             SYSTEM_PROMPT,
@@ -141,7 +94,7 @@ class ChatWithLogs:
         user_input = user_messages[-1]["content"]
 
         if len(messages) <= 2:
-            self.get_log_summary()
+            self.get_vector_db_summary()
 
             prompt = f"{PROMPT_PREFIX}{user_input}\n\n {FORMAT_RESPONSE}\n\n \
             Here are the logs in CSV format: \n{str(self.SUMMARY_INFO)}"

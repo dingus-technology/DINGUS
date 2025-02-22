@@ -6,9 +6,23 @@ import logging
 
 from openai import OpenAI
 
+from dingus.database.vector_db import QdrantDatabaseClient
 from dingus.settings import MODEL_PRICING
+from dingus.settings import QDRANT_HOST
 
 logger = logging.getLogger(__name__)
+
+collection_name="logs_index"
+
+def get_qdrant_client():
+    if not hasattr(get_qdrant_client, "instance"):
+        logger.info("Creating QdrantDatabaseClient instance")
+        get_qdrant_client.instance = QdrantDatabaseClient(host=QDRANT_HOST, collection_name=collection_name)
+        logger.info("QdrantDatabaseClient instance created")
+
+    return get_qdrant_client.instance
+
+qdrant_client = get_qdrant_client()
 
 
 class OpenAIChatClient:
