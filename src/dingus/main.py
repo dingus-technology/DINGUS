@@ -14,6 +14,7 @@ from dingus.settings import APP_TITLE
 
 set_logging()
 
+
 app = FastAPI(docs_url=None, redoc_url=None, title=APP_TITLE)
 app.include_router(chat_router)
 app.mount("/assets", StaticFiles(directory="/assets"), name="assets")

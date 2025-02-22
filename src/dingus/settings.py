@@ -17,3 +17,4 @@ LOG_DATA_FILE_PATH = "/data/loki_stream.json"
 TRUNCATE_LOGS = int(100)
 OPENAI_MODEL = "gpt-4o-mini"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+QDRANT_HOST = "http://host.docker.internal:6333"

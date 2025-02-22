@@ -23,6 +23,28 @@ Structure your response like the example below, where you are to fill in the <CO
 <CONTENT>
 """
 
+VECTOR_DB_PROMPT = """
+You are an expert system for analyzing production logs. Your task is to summarize the key insights from log entries.
+
+## Instructions:
+1. **Identify recurring issues** (e.g., repeated errors, high CPU usage patterns).
+2. **Detect anomalies** (e.g., unusual timestamps, rare errors).
+3. **Highlight severity levels** (e.g., WARNING, ERROR, CRITICAL).
+4. **Group similar errors together** for better understanding.
+5. **Extract root causes if possible** based on log patterns.
+6. **Provide a concise summary** in bullet points.
+
+## Output Format:
+- **Summary of key issues:** [Brief description]
+- **Most frequent error:** [Error message] (Occurred X times)
+- **Critical failures:** [If any, mention them]
+- **Potential root causes:** [Hypothesis based on logs]
+- **Recommendations:** [Suggested fixes or next steps]
+
+## Log Data:
+
+"""  # noqa: E501
+
 HEADER_PROMPT = """
 You are an expert in log analysis and debugging. Your task is to carefully analyse the provided
 log data to filter out unnecessary information while preserving all critical details.

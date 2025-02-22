@@ -3,17 +3,19 @@
 This file lets you interact with a logs file like an AI agent.
 """
 
-import os
+import logging
 
 from fastapi import HTTPException, status
 
 from dingus.clients import OpenAIChatClient
+from dingus.database.vector_db import QdrantDatabaseClient
 from dingus.prompts import (
     FORMAT_RESPONSE,
     HEADER_PROMPT,
     PROMPT_PREFIX,
     SUMMARY_PROMPT,
     SYSTEM_PROMPT,
+    VECTOR_DB_PROMPT,
 )
 from dingus.settings import (
     LOG_DATA_FILE_PATH,
@@ -22,6 +24,57 @@ from dingus.settings import (
     TRUNCATE_LOGS,
 )
 from dingus.utils import get_logs_data
+
+logger = logging.getLogger(__name__)
+logs = [
+    {
+        "stream": {
+            "filename": "sanitised_data.py",
+            "job": "cpu_monitor",
+            "level": "WARNING",
+            "line": "64",
+            "logger": "cpu_monitor_logger",
+            "message": "High CPU load detected",
+            "service": "monitoring-app",
+            "service_name": "monitoring-app",
+            "severity": "warning",
+            "timestamp": "2025-02-21 15:12:23",
+        },
+        "values": [
+            [
+                "1740150743368291840",
+                '{"timestamp": "2025-02-21 15:12:23", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
+            ]
+        ],
+    },
+    {
+        "stream": {
+            "filename": "sanitised_data.py",
+            "job": "cpu_monitor",
+            "level": "WARNING",
+            "line": "64",
+            "logger": "cpu_monitor_logger",
+            "message": "High CPU load detected",
+            "service": "monitoring-app",
+            "service_name": "monitoring-app",
+            "severity": "warning",
+            "timestamp": "2025-02-21 15:12:20",
+        },
+        "values": [
+            [
+                "1740150740271497984",
+                '{"timestamp": "2025-02-21 15:12:20", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
+            ]
+        ],
+    },
+]
+
+
+def get_qdrant_client():
+    if not hasattr(get_qdrant_client, "instance"):
+        # get_qdrant_client.instance = QdrantDatabaseClient().upsert(data=logs)
+        logging.info("QdrantClient instance created")
+    return get_qdrant_client.instance
 
 
 class ChatWithLogs:
@@ -34,6 +87,23 @@ class ChatWithLogs:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
         self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
+
+        self.qdrant_client = get_qdrant_client()
+
+    def get_vector_db_summary(self):
+        """
+        Generate a summary of the vector database.
+        """
+
+        vector_search = self.qdrant_client.search(["High CPU load detected"])
+
+        messages = [
+            SYSTEM_PROMPT,
+            {"role": "user", "content": VECTOR_DB_PROMPT + str(vector_search)},
+        ]
+        self.VECTOR_DB_SUMMARY = self.openai_client.chat(messages, max_tokens=1000)
+        with open("/data/vector_db_summary.txt", "w") as f:
+            f.write(self.VECTOR_DB_SUMMARY)
 
     def get_log_summary(self):
         """
