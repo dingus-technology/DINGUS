@@ -5,12 +5,27 @@ from urllib.parse import urljoin
 import requests  # type: ignore
 
 from dingus.utils import datetime_to_timestamp
+from dingus.settings import LOKI_QUERY_RANGE_ENDPOINT
 
 logger = logging.getLogger(__name__)
 
+def build_loki_query(level: str | None = None, search_word: str | None = None, job_name: str = "cpu_monitor") -> str:
+    """
+    Build a Loki query string to filter logs by level and search word.
 
-LOKI_QUERY_RANGE_ENDPOINT = "/loki/api/v1/query_range"
-
+    Args:
+        level (str): The log level to filter by. Defaults to None.
+        search_word (str): The search word to filter by. Defaults to None.
+        job_name (str): The job name to query for logs. Defaults to "cpu_monitor".
+    
+    Returns:
+        str: The Loki query string.
+    """
+    # TODO: unit tests
+    level_filter = f' | level="{level.upper()}"' if level else ""
+    search_filter = f' |~ "(?i){search_word}"' if search_word else ""
+    logQL = f'{{job="{job_name}"}} | json {level_filter}{search_filter}'
+    return logQL
 
 def fetch_loki_logs(
     loki_base_url: str,
@@ -59,9 +74,7 @@ def fetch_loki_logs(
         logger.error("Invalid time format, cannot fetch logs.")
         return None
 
-    level_filter = f' | level="{level}"' if level else ""
-    search_filter = f' |~ "(?i){search_word}"' if search_word else ""
-    logQL = f'{{job="{job_name}"}}{level_filter}{search_filter}'
+    logQL = build_loki_query(level=level, search_word=search_word, job_name=job_name)
 
     params = {
         "query": logQL,
@@ -102,7 +115,7 @@ if __name__ == "__main__":
     job_name = "cpu_monitor"
     loki_base_url = os.getenv("LOKI_URL", "http://localhost:3100")
     level = None
-    limit = 50
+    limit = 5000
     search_word = None
 
     streams = fetch_loki_logs(
