@@ -73,8 +73,7 @@ class ChatWithLogs:
         headers = headers.replace("```", "").replace("[", "").replace("]", "")
         headers = [item.strip() for item in headers.split(",")]
 
-        self.
-        = get_logs_data(self.LOG_DATA_FILE_PATH, headers)[0 : self.TRUNCATE_LOGS]  # noqa: E203
+        self.log_data = get_logs_data(self.LOG_DATA_FILE_PATH, headers)[0 : self.TRUNCATE_LOGS]  # noqa: E203
 
         messages = [
             SYSTEM_PROMPT,
