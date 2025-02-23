@@ -9,8 +9,7 @@ import logging
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
-from fastapi import FastAPI
-from dingus.database.processors import generate_embeddings
+from dingus.database.processors import generate_embeddings, generate_id
 from dingus.logger import set_logging
 from dingus.settings import QDRANT_COLLECTION_NAME, QDRANT_HOST, QDRANT_VECTOR_SIZE
 
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class QdrantDatabaseClient:
-    def __init__(self, host: str = QDRANT_HOST, collection_name: str = QDRANT_COLLECTION_NAME):
+    def __init__(self, host: str, collection_name: str):
         self.QDRANT_HOST = host
         self.collection_name = collection_name
         self.qdrant_client = QdrantClient(self.QDRANT_HOST)
@@ -40,7 +39,7 @@ class QdrantDatabaseClient:
 
     def create_collection(self):
         """
-        Create a new collection in Qdrant instance.
+        Create a new collection in Qdrant instance if it doesn't already exist.
 
         Args:
             collection_name (str): The name of the collection to create.
@@ -63,20 +62,16 @@ class QdrantDatabaseClient:
         """
         logger.info(f"Upserting {len(data_to_embed)} logs into collection '{self.collection_name}'.")
 
-        ids = [abs(hash(json.dumps(payload, sort_keys=True))) for payload in payloads]
-        existing_ids = set(self.get_existing_ids(ids))
-
+        ids = [generate_id(payload) for payload in payloads]
         embeddings = generate_embeddings(data_to_embed)
 
         points = [
-            {"id": ids[idx], "vector": embeddings[idx].tolist(), "payload": payloads[idx]}
-            for idx in range(len(data_to_embed))
-            if ids[idx] not in existing_ids
+            {"id": ids[idx], "vector": embeddings[idx], "payload": payloads[idx]} for idx in range(len(data_to_embed))
         ]
 
         if points:
             self.qdrant_client.upsert(collection_name=self.collection_name, points=points)
-            logger.info(f"Upserted {len(points)} new logs into collection '{self.collection_name}'.")
+            logger.info(f"Upserted {len(points)} logs into collection '{self.collection_name}'.")
         else:
             logger.info("No new logs to insert.")
 
@@ -125,14 +120,16 @@ class QdrantSingleton:
     def get_instance(cls):
         if cls._instance is None:
             logger.info("Creating new QdrantDatabaseClient instance")
-            cls._instance = QdrantDatabaseClient(
-                host=QDRANT_HOST, collection_name=QDRANT_COLLECTION_NAME
-            )
+            cls._instance = QdrantDatabaseClient(host=QDRANT_HOST, collection_name=QDRANT_COLLECTION_NAME)
             cls._instance.setup()
         return cls._instance
 
 
-def get_qdrant_client(app: FastAPI = None):
-    if app and hasattr(app.state, "qdrant_client"):
-        return app.state.qdrant_client
+def get_qdrant_client():
     return QdrantSingleton.get_instance()
+
+
+if __name__ == "__main__":
+    client = QdrantDatabaseClient(host=QDRANT_HOST, collection_name=QDRANT_COLLECTION_NAME)
+    client.setup()
+    logger.info("QdrantDatabaseClient setup completed")
