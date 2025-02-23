@@ -64,6 +64,8 @@ You are an expert system for analyzing production logs. Your task is to summariz
 ### 📌 **Supporting Evidence:**
 - **Timestamp:**`[When the issue occurred]`
 - **Logs:**`[Relevant log excerpts]`
+- **Location:** `[File, Module and line where the issues are]`
+- **Exception:** `[Log messaging to help the user understand whats happened]`
 - **Context:**`[Additional details connecting different events]`
 ## A Snapshot of the Log Data:
 
