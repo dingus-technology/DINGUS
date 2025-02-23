@@ -13,7 +13,7 @@ The user question is as follows:\n
 
 FORMAT_RESPONSE = """
 Structure your response like the example below, where you are to fill in the <CONTENT>\n\n
-### 🚨 **Critical Issue Detected!** 🚨
+### 🚨 **Critical Issue Detected!**🚨
 <CONTENT>
 #### 🔍 **Issue Summary**
 <CONTENT>
@@ -22,6 +22,54 @@ Structure your response like the example below, where you are to fill in the <CO
 #### ✅ **Recommended Actions**
 <CONTENT>
 """
+
+VECTOR_DB_PROMPT = """
+You are an expert system for analyzing production logs. Your task is to summarize the key insights from log entries.
+
+## **Instructions:**
+1. **Identify recurring issues**
+   - Detect repeated errors, high CPU/memory usage patterns, or frequent service timeouts.
+2. **Detect anomalies**
+   - Spot unusual timestamps, rare errors, or unexpected behaviors.
+3. **Assess severity levels**
+   - Categorize log entries into **INFO, WARNING, ERROR, CRITICAL**, prioritizing critical failures.
+4. **Group and correlate errors**
+   - Cluster similar log messages for easier debugging.
+   - Identify dependencies (e.g., a failing database query linked to API failures).
+5. **Extract potential root causes**
+   - Analyze patterns to suggest likely causes, considering previous logs and context.
+6. **Provide clear and concise insights**
+   - Summarize key findings in a structured format for quick decision-making.
+7. **Enhance trust with evidence**
+   - Reference specific log entries, timestamps, and affected components to support conclusions.
+
+## **Output Format:**
+### 🔍 **Summary of Key Issues:**
+- **[Brief description of the primary problems]**
+
+### 📊 **Most Frequent Errors:**
+- **Error:**`[Error message]` (Occurred **X times**)
+- **Impacted Component:**`[Service/module affected]`
+
+### 🚨 **Critical Failures:**
+- **[If applicable, list any severe crashes or outages]**
+
+### 🔎 **Potential Root Causes:**
+- **Hypothesis:**`[Based on log patterns, previous occurrences, or system dependencies]`
+
+### 🛠 **Recommended Actions:**
+- **[Clear, actionable steps to resolve the issue]**
+- **[Suggested mitigations or follow-up checks]**
+
+### 📌 **Supporting Evidence:**
+- **Timestamp:**`[When the issue occurred]`
+- **Logs:**`[Relevant log excerpts]`
+- **Location:** `[File, Module and line where the issues are]`
+- **Exception:** `[Log messaging to help the user understand whats happened]`
+- **Context:**`[Additional details connecting different events]`
+## A Snapshot of the Log Data:
+
+"""  # noqa: E501
 
 HEADER_PROMPT = """
 You are an expert in log analysis and debugging. Your task is to carefully analyse the provided
@@ -51,4 +99,9 @@ The final output will be used in a chat history, where users will ask questions 
 Ensure that the remaining logs provide maximum clarity and actionable insights.
 """  # noqa: E501
 
-SYSTEM_PROMPT = {"role": "system", "content": "You are a production debugging expert."}
+SYSTEM_CONTENT = """
+You are an expert AI system specialized in diagnosing and troubleshooting production issues by analyzing logs.
+Your goal is to identify patterns, detect anomalies, and provide actionable insights to engineers.
+"""  # noqa: E501
+
+SYSTEM_PROMPT = {"role": "system", "content": SYSTEM_CONTENT}

@@ -18,9 +18,13 @@ services:
     environment:
       - FASTAPI_PORT=8000
       - OPENAI_API_KEY=$OPENAI_API_KEY
+      - OPENAI_MODEL=$OPENAI_MODEL
       - CHAT_API_URL=$CHAT_API_URL
       - LOKI_URL=$LOKI_URL
       - LOKI_JOB_NAME=$LOKI_JOB_NAME
+      - QDRANT_PORT=$QDRANT_PORT
+      - QDRANT_HOST=$QDRANT_HOST
+      - QDRANT_COLLECTION_NAME=$QDRANT_COLLECTION_NAME
 
   frontend:
     build:
@@ -41,3 +45,16 @@ services:
     environment:
       - STREAMLIT_PORT=8501
       - CHAT_API_URL=$CHAT_API_URL
+  
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-db
+    restart: always
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  qdrant_data:

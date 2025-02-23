@@ -2,18 +2,16 @@
 Chat endpoint in the FastAPI
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, status
 
-from dingus.chat_with_logs import ChatWithLogs
+from dingus.chat_with_logs import ChatWithLogs, get_chat_with_logs
 from dingus.schemas import ChatRequest, ChatResponse
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(tags=["chat"])
-
-
-def get_chat_with_logs():
-    if not hasattr(get_chat_with_logs, "instance"):
-        get_chat_with_logs.instance = ChatWithLogs()
-    return get_chat_with_logs.instance
 
 
 @router.post("/chat", response_model=ChatResponse, responses={status.HTTP_400_BAD_REQUEST: {}})
