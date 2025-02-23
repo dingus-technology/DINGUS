@@ -10,14 +10,14 @@ from dingus.utils import datetime_to_timestamp
 logger = logging.getLogger(__name__)
 
 
-def build_loki_query(level: str | None = None, search_word: str | None = None, job_name: str = "cpu_monitor") -> str:
+def build_loki_query(job_name: str, level: str | None = None, search_word: str | None = None) -> str:
     """
     Build a Loki query string to filter logs by level and search word.
 
     Args:
+        job_name (str): The job name to query for logs. Defaults to "cpu_monitor".
         level (str): The log level to filter by. Defaults to None.
         search_word (str): The search word to filter by. Defaults to None.
-        job_name (str): The job name to query for logs. Defaults to "cpu_monitor".
 
     Returns:
         str: The Loki query string.
@@ -87,6 +87,8 @@ def fetch_loki_logs(
     }
     url = urljoin(loki_base_url, LOKI_QUERY_RANGE_ENDPOINT)
 
+    logger.info(f"Fetching Loki logs: {params}, from {url}")
+
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -112,12 +114,12 @@ if __name__ == "__main__":
 
     set_logging()
 
-    start_time = "2025-02-21 00:00:00"
-    end_time = "2025-02-21 15:34:56"
-    job_name = "cpu_monitor"
-    loki_base_url = os.getenv("LOKI_URL", "http://localhost:3100")
+    start_time = "2025-02-22 01:00:00"
+    end_time = "2025-02-24 15:34:56"
+    job_name = os.getenv("LOKI_JOB_NAME")
+    loki_base_url = os.getenv("LOKI_URL")
     level = None
-    limit = 5000
+    limit = 50
     search_word = None
 
     streams = fetch_loki_logs(

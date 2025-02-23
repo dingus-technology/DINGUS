@@ -48,8 +48,10 @@ class ChatWithLogs:
         Generate a summary of the vector database.
         """
         query_text = "CPU"  # TODO: dynamic searchs
-        vector_search = self.qdrant_client.search(collection_name=QDRANT_COLLECTION_NAME, query_text=query_text)
-        logger.info(f"Vector search: {vector_search}")
+        vector_search = self.qdrant_client.search(
+            collection_name=QDRANT_COLLECTION_NAME, query_text=query_text, limit=20
+        )
+        logger.info(f"Vector search length: {len(vector_search)}")
 
         messages = [
             SYSTEM_PROMPT,

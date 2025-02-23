@@ -52,10 +52,13 @@ def datetime_to_timestamp(datetime_str: str) -> int | None:
 
     Returns:
         int: The Unix timestamp, or None if conversion fails.
+
+    Raises:
+        ValueError: If the datetime string is in an incorrect format.
     """
     try:
         dt_obj = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
         return int(dt_obj.timestamp())
     except ValueError as e:
-        logger.error(f"Error converting datetime to timestamp: {e}")
-        return None
+        logger.error(f"Invalid datetime format: {datetime_str}. Expected format: 'YYYY-MM-DD HH:MM:SS'.")
+        raise ValueError(f"Invalid datetime format: {datetime_str}. Expected format: 'YYYY-MM-DD HH:MM:SS'.") from e
