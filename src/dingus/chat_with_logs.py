@@ -7,7 +7,8 @@ import logging
 
 from fastapi import HTTPException, status
 
-from dingus.clients import OpenAIChatClient, qdrant_client
+from dingus.database.vector_db import get_qdrant_client
+from dingus.llm_clients import OpenAIChatClient
 from dingus.prompts import (
     FORMAT_RESPONSE,
     HEADER_PROMPT,
@@ -20,6 +21,7 @@ from dingus.settings import (
     LOG_DATA_FILE_PATH,
     OPENAI_API_KEY,
     OPENAI_MODEL,
+    QDRANT_COLLECTION_NAME,
     TRUNCATE_LOGS,
 )
 from dingus.utils import get_logs_data
@@ -30,6 +32,7 @@ logger = logging.getLogger(__name__)
 class ChatWithLogs:
 
     def __init__(self):
+        logger.info("ChatWithLogs instance created")
         self.LOG_DATA_FILE_PATH = LOG_DATA_FILE_PATH
         self.TRUNCATE_LOGS = TRUNCATE_LOGS
 
@@ -37,14 +40,16 @@ class ChatWithLogs:
             raise ValueError("The OPENAI_API_KEY environment variable is not set.")
 
         self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
-        self.qdrant_client = qdrant_client
+        self.qdrant_client = get_qdrant_client()
 
     def get_vector_db_summary(self):
         """
         Generate a summary of the vector database.
         """
 
-        vector_search = self.qdrant_client.search(collection_name='logs_index', query_text="High CPU load detected")
+        vector_search = self.qdrant_client.search(
+            collection_name=QDRANT_COLLECTION_NAME, query_text="High CPU load detected"
+        )
 
         messages = [
             SYSTEM_PROMPT,
@@ -110,3 +115,10 @@ class ChatWithLogs:
             messages.append({"role": "assistant", "content": response})
 
         return messages
+
+
+def get_chat_with_logs():
+    if not hasattr(get_chat_with_logs, "instance"):
+        get_chat_with_logs.instance = ChatWithLogs()
+        logger.info("ChatWithLogs instance created")
+    return get_chat_with_logs.instance

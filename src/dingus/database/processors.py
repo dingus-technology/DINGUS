@@ -8,9 +8,9 @@ import logging
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-logger = logging.getLogger(__name__)
+from dingus.settings import SENTENCE_TRANSFORMER_MODEL
 
-SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
+logger = logging.getLogger(__name__)
 
 
 def generate_embeddings(texts: list) -> list | None:

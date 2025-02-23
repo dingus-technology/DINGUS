@@ -3,58 +3,37 @@
 This script creates a new collection in Qdrant instance.
 """
 
+import json
 import logging
-
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
-import json
+
+from fastapi import FastAPI
 from dingus.database.processors import generate_embeddings
-from dingus.settings import QDRANT_HOST
+from dingus.logger import set_logging
+from dingus.settings import QDRANT_COLLECTION_NAME, QDRANT_HOST, QDRANT_VECTOR_SIZE
 
-VECTOR_SIZE = 384  # 384D for MiniLM
-
+set_logging()
 
 logger = logging.getLogger(__name__)
 
 
 class QdrantDatabaseClient:
-    def __init__(self, host: str = QDRANT_HOST, collection_name: str = "logs_index"):
+    def __init__(self, host: str = QDRANT_HOST, collection_name: str = QDRANT_COLLECTION_NAME):
         self.QDRANT_HOST = host
         self.collection_name = collection_name
         self.qdrant_client = QdrantClient(self.QDRANT_HOST)
 
-        self.setup()
-
     def setup(self):
-         # TODO: get direct from logs API.
-        # with open("data/loki_stream_5k.json") as f:
-            # logs = json.load(f)
-        logs = [
-            {
-                "stream": {
-                    "filename": "sanitised_data.py",
-                    "job": "cpu_monitor",
-                    "level": "WARNING",
-                    "line": "64",
-                    "logger": "cpu_monitor_logger",
-                    "message": "High CPU load detected",
-                    "service": "monitoring-app",
-                    "service_name": "monitoring-app",
-                    "severity": "warning",
-                    "timestamp": "2025-02-21 15:12:20",
-                },
-                "values": [
-                    [
-                        "1740150740271497984",
-                        '{"timestamp": "2025-02-21 15:12:20", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
-                    ]
-                ],
-            },
-        ]
+        logger.info("Setting up Qdrant Database Client")
 
-        data = [log.get("stream",{}).get("message", None) for log in logs]
-        payloads = [log.get("stream",{}) for log in logs]
+        # TODO: get direct from logs API.
+        with open("/data/loki_stream.json") as f:
+            logs = json.load(f)[0:10]
+
+        data = [log.get("stream", {}).get("message") for log in logs]
+        payloads = [log.get("stream") for log in logs]
 
         self.create_collection()
         self.upsert(data_to_embed=data, payloads=payloads)
@@ -72,7 +51,7 @@ class QdrantDatabaseClient:
             logger.info(f"Creating collection '{self.collection_name}' in Qdrant.")
             self.qdrant_client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE),
+                vectors_config=VectorParams(size=QDRANT_VECTOR_SIZE, distance=Distance.COSINE),
             )
             logger.info(f"Created collection '{self.collection_name}' in Qdrant.")
         except Exception as e:
@@ -80,25 +59,26 @@ class QdrantDatabaseClient:
 
     def upsert(self, data_to_embed: list, payloads: list):
         """
-        Insert logs into Qdrant.
-
-        Args:
-            data_to_embed (str): The name of the collection to insert into.
-            data (list): List of points to insert.
-        Returns:
-            None
+        Insert logs into Qdrant, ensuring no duplicates are added.
         """
-
         logger.info(f"Upserting {len(data_to_embed)} logs into collection '{self.collection_name}'.")
+
+        ids = [abs(hash(json.dumps(payload, sort_keys=True))) for payload in payloads]
+        existing_ids = set(self.get_existing_ids(ids))
 
         embeddings = generate_embeddings(data_to_embed)
 
         points = [
-            {"id": idx, "vector": embeddings[idx].tolist(), "payload": payloads[idx]}
+            {"id": ids[idx], "vector": embeddings[idx].tolist(), "payload": payloads[idx]}
             for idx in range(len(data_to_embed))
+            if ids[idx] not in existing_ids
         ]
-        self.qdrant_client.upsert(collection_name=self.collection_name, points=points)
-        logger.info(f"Upserted {len(points)} logs into collection '{self.collection_name}'.")
+
+        if points:
+            self.qdrant_client.upsert(collection_name=self.collection_name, points=points)
+            logger.info(f"Upserted {len(points)} new logs into collection '{self.collection_name}'.")
+        else:
+            logger.info("No new logs to insert.")
 
     def search(self, collection_name: str | None, query_text: str, limit: int = 5) -> list:
         """
@@ -122,48 +102,37 @@ class QdrantDatabaseClient:
 
         return search_results
 
-
-def cli():
-
-    logs = [
-        {
-            "stream": {
-                "filename": "sanitised_data.py",
-                "job": "cpu_monitor",
-                "level": "WARNING",
-                "line": "64",
-                "logger": "cpu_monitor_logger",
-                "message": "High CPU load detected",
-                "service": "monitoring-app",
-                "service_name": "monitoring-app",
-                "severity": "warning",
-                "timestamp": "2025-02-21 15:12:20",
-            },
-            "values": [
-                [
-                    "1740150740271497984",
-                    '{"timestamp": "2025-02-21 15:12:20", "level": "WARNING", "filename": "sanitised_data.py", "line": 64, "message": "High CPU load detected"}',
-                ]
-            ],
-        },
-    ]
-
-    data = [log["stream"]["message"] for log in logs]
-    payloads = [log["stream"] for log in logs]
-
-    qdrant_client = QdrantDatabaseClient()
-    qdrant_client.create_collection()
-    qdrant_client.upsert(data_to_embed=data, payloads=payloads)
-
-    while True:
-        user_input = input("\nAsk a question:\n\n ")
-        search_results = qdrant_client.search(collection_name="logs_index", query_text=user_input)
-        # TODO: get item and 'chunk' from db
-        print(search_results)
-
-        if user_input.lower() == "exit":
-            break
+    def get_existing_ids(self, ids):
+        """
+        Check which IDs already exist in Qdrant.
+        """
+        existing_ids = []
+        for _id in ids:
+            try:
+                res = self.qdrant_client.retrieve(collection_name=self.collection_name, ids=[_id])
+                if res:
+                    existing_ids.append(_id)
+            except Exception as e:
+                logger.warning(f"Error checking ID {_id}: {e}")
+        logger.info(f"Found {len(existing_ids)} existing logs in collection '{self.collection_name}'.")
+        return existing_ids
 
 
-if __name__ == "__main__":
-    cli()
+class QdrantSingleton:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            logger.info("Creating new QdrantDatabaseClient instance")
+            cls._instance = QdrantDatabaseClient(
+                host=QDRANT_HOST, collection_name=QDRANT_COLLECTION_NAME
+            )
+            cls._instance.setup()
+        return cls._instance
+
+
+def get_qdrant_client(app: FastAPI = None):
+    if app and hasattr(app.state, "qdrant_client"):
+        return app.state.qdrant_client
+    return QdrantSingleton.get_instance()
