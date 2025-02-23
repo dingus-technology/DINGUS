@@ -3,15 +3,23 @@
 This script creates a new collection in Qdrant instance.
 """
 
-import json
 import logging
+from datetime import datetime, timedelta
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
+from dingus.connectors import fetch_loki_logs
 from dingus.database.processors import generate_embeddings, generate_id
 from dingus.logger import set_logging
-from dingus.settings import QDRANT_COLLECTION_NAME, QDRANT_HOST, QDRANT_VECTOR_SIZE
+from dingus.settings import (
+    LOKI_END_HOURS_AGO,
+    LOKI_JOB_NAME,
+    LOKI_URL,
+    QDRANT_COLLECTION_NAME,
+    QDRANT_HOST,
+    QDRANT_VECTOR_SIZE,
+)
 
 set_logging()
 
@@ -25,14 +33,34 @@ class QdrantDatabaseClient:
         self.qdrant_client = QdrantClient(self.QDRANT_HOST)
 
     def setup(self):
+        logger.info("Getting Logs")
+
+        now = datetime.now()
+        end_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        start_time = (now - timedelta(hours=LOKI_END_HOURS_AGO)).strftime("%Y-%m-%d %H:%M:%S")
+
+        streams = fetch_loki_logs(
+            loki_base_url=LOKI_URL,
+            job_name=LOKI_JOB_NAME,
+            start_time=start_time,
+            end_time=end_time,
+            limit=50,
+            level=None,
+            search_word=None,
+        )
+
+        if not streams:
+            logger.error("No streams fetched from Loki.")
+            raise ValueError("No streams fetched from Loki.")
+
         logger.info("Setting up Qdrant Database Client")
 
-        # TODO: get direct from logs API.
-        with open("/data/loki_stream.json") as f:
-            logs = json.load(f)[0:10]
-
-        data = [log.get("stream", {}).get("message") for log in logs]
-        payloads = [log.get("stream") for log in logs]
+        try:
+            data = [log.get("stream", {}).get("message") for log in streams]
+            payloads = [log.get("stream") for log in streams]
+        except TypeError as e:
+            logger.error(f"Failed to extract streams from Loki; {e}")
+            raise TypeError(f"Failed to extract streams from Loki; {e}") from e
 
         self.create_collection()
         self.upsert(data_to_embed=data, payloads=payloads)
