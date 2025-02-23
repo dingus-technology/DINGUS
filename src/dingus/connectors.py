@@ -116,8 +116,8 @@ if __name__ == "__main__":
 
     start_time = "2025-02-22 01:00:00"
     end_time = "2025-02-24 15:34:56"
-    job_name = os.getenv("LOKI_JOB_NAME")
-    loki_base_url = os.getenv("LOKI_URL")
+    job_name = os.getenv("LOKI_JOB_NAME", "cpu_monitor")
+    loki_base_url = os.getenv("LOKI_URL", "http://host.docker.internal:3100")
     level = None
     limit = 50
     search_word = None
