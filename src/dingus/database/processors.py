@@ -33,6 +33,7 @@ def generate_embeddings(texts: list) -> list:
 
     except Exception as e:
         logger.error(f"Failed to generate embeddings. Error: {e}")
+        raise UnicodeEncodeError("Failed embedding text to vectors")
 
 
 def generate_id(payload):
