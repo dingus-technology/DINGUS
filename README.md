@@ -21,7 +21,7 @@ cp sample.env .env
 
 ##### Configure Environment Variables  
 
-These environment variables are essential for connecting **Chat with Logs** to **Loki**, as well as enabling AI-powered log analysis. The remaining variables can be left as is.
+These environment variables are essential for connecting **Chat with Logs** to **Loki**, as well as enabling AI-powered log analysis. The remaining variables can be left as default (Note: if you are using linux, swap `http://host.docker.internal` with your host machine's local IP).
 
 *If you do not wish to start with your Loki production logs, [use this simulation repository](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) for creating simulated logs locally*
 
