@@ -19,13 +19,9 @@ jobs:
       - name: Copy sample.env to .env
         run: cp sample.env .env
 
-      - name: Build Docker Image (with TARGET argument)
-        run: |
-          docker build --build-arg TARGET=build-agent --no-cache -t dingus-build-agent .
-
       - name: Start Docker Compose Services
         run: |
-          docker compose up --build -d
+          docker compose build --build-arg TARGET=build-agent
           docker ps  # Debugging: list running containers
 
       - name: Run Code Checks
