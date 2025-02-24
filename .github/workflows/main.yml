@@ -22,7 +22,6 @@ jobs:
       - name: Create .env
         run: |
           cp sample.env .env
-          echo "TARGET=build-agent" >> .env
 
       - name: Start Docker Compose Services
         run: |
