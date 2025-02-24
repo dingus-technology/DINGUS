@@ -16,7 +16,7 @@ RUN groupadd -g ${GID} $USER_NAME && \
     useradd -m -u ${UID} --gid ${GID} $USER_NAME
 
 # Make dirs and change owner 
-RUN mkdir /logs /data && chown -R $USER_NAME:$USER_NAME /logs /data
+RUN mkdir -p /logs /data && chown -R $USER_NAME:$USER_NAME /logs /data
 
 # Set user
 USER $USER_NAME
@@ -35,9 +35,7 @@ COPY --chown=$USER_NAME:$USER_NAME /requirements.txt /src/requirements.txt
 RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 
 # Copy source code
-COPY --chown=$USER_NAME:$USER_NAME ./data /data/ \
-    ./scripts /scripts/ \
-    ./logs /logs/ \
+COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/ \
     ./src /src/ \
     ./assets /assets/
 
