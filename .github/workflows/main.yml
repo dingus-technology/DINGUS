@@ -25,7 +25,6 @@ jobs:
 
       - name: Start Docker Compose Services
         run: |
-          sed -i 's/ARG TARGET=default/ARG TARGET=build-agent/' Dockerfile.dingus
           docker compose up --build
           docker ps  # Debugging: list running containers
 
