@@ -1,3 +1,7 @@
+"""app.py
+
+This file supports the streamlit frontend"""
+
 import os
 
 import pandas as pd

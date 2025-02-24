@@ -400,5 +400,6 @@ FodyWeavers.xsd
 # secret vars
 .env
 
+# Volumes
 data/
 logs/

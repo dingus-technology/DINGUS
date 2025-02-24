@@ -1,3 +1,7 @@
+"""logger.py
+
+This module sets up the logger to be used in the app."""
+
 import logging
 import sys
 

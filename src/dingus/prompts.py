@@ -1,4 +1,5 @@
 """prompts.py
+
 Contains the prompts for the Dingus chatbot."""
 
 PROMPT_PREFIX = """

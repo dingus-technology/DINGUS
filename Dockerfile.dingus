@@ -18,10 +18,13 @@ RUN groupadd -g ${GID} $USER_NAME && \
 # Make dirs and change owner 
 RUN mkdir /logs /data && chown -R $USER_NAME:$USER_NAME /logs /data
 
+# Set user
 USER $USER_NAME
 
+# Set dir
 WORKDIR /src
 
+# Python env
 ENV ENV_PATH=/home/$USER_NAME/venv
 RUN python -m venv ${ENV_PATH}
 ENV PATH="$ENV_PATH/bin:$PATH" \

@@ -1,3 +1,7 @@
+"""connectors.py
+
+Ths module contains connections to external data sources."""
+
 import logging
 import os
 from urllib.parse import urljoin

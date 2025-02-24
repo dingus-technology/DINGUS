@@ -1,3 +1,7 @@
+"""utils.py
+
+This module contains common utility funtions."""
+
 import time
 
 

@@ -1,4 +1,4 @@
-"""setup.py
+"""vector_db.py
 
 This script creates a new collection in Qdrant instance.
 """
