@@ -8,13 +8,16 @@ on:
 jobs:
   code-checks:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Docker BuildX
         uses: docker/setup-buildx-action@v3
+
+      - name: Copy sample.env to .env
+        run: cp sample.env .env
 
       - name: Start Docker Compose Services
         run: |
@@ -25,6 +28,8 @@ jobs:
         run: |
           docker compose exec -T dingus format-checks
           docker compose exec -T dingus code-checks
+          docker compose exec -T frontend format-checks
+          docker compose exec -T frontend code-checks
 
       - name: Stop Docker Compose
         if: always()

@@ -10,8 +10,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
-ARG UID=1000
-ARG GID=1001
+ARG UID=2000
+ARG GID=3000
 RUN groupadd -g ${GID} $USER_NAME && \
     useradd -m -u ${UID} --gid ${GID} $USER_NAME
 
