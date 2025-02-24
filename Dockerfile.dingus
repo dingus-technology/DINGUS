@@ -43,7 +43,10 @@ COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
 
 # Ensure scripts have execute permissions
 RUN chmod +x /scripts/
-RUN dos2unix /scripts/
+RUN dos2unix /scripts/format-checks.sh
+RUN dos2unix /scripts/code-checks.sh
+RUN dos2unix /src/entrypoint.sh
+
 
 # Add aliases
 RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc

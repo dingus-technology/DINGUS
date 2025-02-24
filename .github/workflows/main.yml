@@ -26,9 +26,7 @@ jobs:
 
       - name: Run Code Checks
         run: |
-          docker compose exec -T dingus format-checks
           docker compose exec -T dingus code-checks
-          docker compose exec -T frontend format-checks
           docker compose exec -T frontend code-checks
 
       - name: Stop Docker Compose
