@@ -36,15 +36,17 @@ These environment variables are essential for connecting **Chat with Logs** to *
 
 ### 2️⃣ Usine colima
 
-If running on mac, use colima for reduced overheads rather that Docker Desktop
+If running on mac, use [`colima`](https://github.com/abiosoft/colima) for reduced overheads rather that Docker Desktop
 
 ```bash
+brew install colima
 colima start
+brew install docker-compose
 ```
 
 ### 3️⃣ Install Docker
 
-This project runs on **Docker**. If you haven't installed it yet, grab it [here](https://www.docker.com/). This was built using Docker **20.10.17**, but newer versions should work fine.
+This project runs on **Docker**. If you haven't installed it yet (unless using `colima`^), grab it [here](https://www.docker.com/). This was built using Docker **20.10.17**, but newer versions should work fine.
 
 
 ## 🐳 Running with Docker
