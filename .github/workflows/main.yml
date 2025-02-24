@@ -20,8 +20,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Create .env
-        run: cp sample.env .env
-        run: echo "TARGET=build-agent" >> .env
+        run: |
+          cp sample.env .env
+          echo "TARGET=build-agent" >> .env
 
       - name: Start Docker Compose Services
         run: |
