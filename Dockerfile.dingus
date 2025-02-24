@@ -35,7 +35,7 @@ COPY --chown=$USER_NAME:$USER_NAME /requirements.txt /src/requirements.txt
 RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 
 # Avoid large package on build agent
-RUN if [ "$TARGET" != "build-agent" ]; then \
+RUN if [ "${TARGET}" != "build-agent" ]; then \
         pip install sentence-transformers==3.4.1; \
     fi
 
