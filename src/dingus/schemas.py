@@ -1,3 +1,7 @@
+"""schemas.py
+
+This module contains the pydantic data classes."""
+
 from pydantic import BaseModel, Field
 
 

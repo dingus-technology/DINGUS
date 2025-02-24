@@ -1,3 +1,7 @@
+"""utils.py
+
+Ths module contais utility functions to be used across the app."""
+
 import time
 
 

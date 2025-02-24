@@ -1,3 +1,10 @@
+"""logger.py
+
+This module to sets up logging levels and outputs.
+"""
+
+
+
 import logging
 import sys
 

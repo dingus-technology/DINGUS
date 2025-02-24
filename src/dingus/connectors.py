@@ -1,3 +1,8 @@
+"""connectors.py
+
+Thsi module provides connections to external databases."""
+
+
 import logging
 import os
 from urllib.parse import urljoin

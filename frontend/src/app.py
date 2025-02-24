@@ -1,3 +1,7 @@
+"""app.py
+
+This file is the main app for creating the streamlit frontend."""
+
 import os
 
 import pandas as pd
