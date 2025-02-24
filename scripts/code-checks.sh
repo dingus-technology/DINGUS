@@ -17,6 +17,7 @@ black_output=$(black $APP_DIR -l $LINE_LENGTH --check 2>&1)
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} ❌ black failed with errors:${NC}"
     echo -e "${YELLOW}$black_output${NC}"
+    exit 1  # Fail the pipeline if black fails
 fi
 
 # Run flake8 and capture any errors
@@ -25,6 +26,7 @@ flake8_output=$(flake8 $APP_DIR --max-line-length=$LINE_LENGTH 2>&1)
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} ❌ flake8 failed with errors:${NC}"
     echo -e "${YELLOW}$flake8_output${NC}"
+    exit 1  # Fail the pipeline if flake8 fails
 fi
 
 # Run mypy and capture any errors
@@ -33,4 +35,5 @@ mypy_output=$(mypy $APP_DIR 2>&1)
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} ❌ mypy failed with errors:${NC}"
     echo -e "${YELLOW}$mypy_output${NC}"
+    exit 1  # Fail the pipeline if mypy fails
 fi

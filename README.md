@@ -13,9 +13,10 @@ Whether you're a **lead engineer** troubleshooting production issues or a **hobb
 
 ### 1️⃣ Create Your `.env` File  
 
-Before getting started, configure your environment variables. Copy the sample configuration:  
+Before getting started, configure your environment variables and folders. Copy the sample configuration:  
 
 ```bash
+mkdir logs data
 cp sample.env .env
 ```
 
