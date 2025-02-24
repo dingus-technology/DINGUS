@@ -2,19 +2,37 @@
 
 ![Chat With Logs Film](assets/chat_with_logs_film.png)
 
-Welcome to **Chat with Logs**, your AI-powered debugging assistant! This tool analyzes production logs, detects issues, and helps you debug like a pro. Whether you're a lead engineer guiding your team or a hobbyist fixing bugs, we've got your back.
+## 🤖 AI-Powered Debugging for Loki  
 
----
+Welcome to **Chat with Logs**, your intelligent debugging assistant designed for seamless **Loki** integration! This tool analyses your **production logs**, detects critical issues, and suggests actionable fixes—helping you resolve problems faster and more efficiently.  
 
-## 🛠️ Setup Guide
+Whether you're a **lead engineer** troubleshooting production issues or a **hobbyist** debugging side projects, **Chat with Logs** empowers you with AI-driven insights to **accelerate incident resolution**.  
 
-### 1️⃣ Create Your `.env` File
 
-Before we start, let's set up your environment variables. Copy the sample file:
+## 🛠️ Setup Guide  
+
+### 1️⃣ Create Your `.env` File  
+
+Before getting started, configure your environment variables. Copy the sample configuration:  
 
 ```bash
 cp sample.env .env
 ```
+
+##### Configure Environment Variables  
+
+These environment variables are essential for connecting **Chat with Logs** to **Loki**, as well as enabling AI-powered log analysis. The remaining variables can be left as is.
+
+*If you do not wish to start with your Loki production logs, [use this simulation repository](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) for creating simulated logs locally*
+
+
+| Variable Name      | Example Value           | Description                                                    |
+| ------------------ | ----------------------- | -------------------------------------------------------------- |
+| **OPENAI_API_KEY** | `sk-xxxxxxxxxx`         | API key for OpenAI, required for AI-driven log analysis.       |
+| **LOKI_URL**       | `http://localhost:3100` | URL of your Loki instance, where logs are stored and queried.  |
+| **LOKI_JOB_NAME**  | `my-app-logs`           | The Loki job name that Chat with Logs will analyze for issues. |
+
+---
 
 ### 2️⃣ Usine colima
 
@@ -28,7 +46,6 @@ colima start
 
 This project runs on **Docker**. If you haven't installed it yet, grab it [here](https://www.docker.com/). This was built using Docker **20.10.17**, but newer versions should work fine.
 
----
 
 ## 🐳 Running with Docker
 
@@ -113,3 +130,4 @@ Enjoy the visual debugging experience!
 
 🔧 Happy Debugging! 🚀
 
+For more help and information with the codebase see [www.dingusai.dev](https://www.dingusai.dev).
