@@ -15,6 +15,7 @@ from dingus.prompts import (
     VECTOR_DB_PROMPT,
 )
 from dingus.settings import TRUNCATE_LOGS
+from dingus.tools.k8 import KubernetesClient
 from dingus.tools.vectors import search_logs
 from dingus.utils import get_logs_data
 
@@ -105,3 +106,30 @@ def get_csv_summary(log_file_path: str, openai_client: OpenAIChatClient) -> str:
         f.write(summary)
 
     return summary
+
+
+def get_k8_summary(openai_client: OpenAIChatClient, kube_config_path: str, namespace: str = "default") -> str:
+    """
+    Fetch and print a summary of the Kubernetes cluster.
+    Args:
+        openai_client (OpenAIChatClient): An instance of the OpenAI chat client.
+        kube_config_path (str): Path to kube config.
+        namespace (str): the k8 namespace.
+
+    Returns:
+        str: A summarized snapshot of the k8 deployment.
+    """
+    kube_client = KubernetesClient(kube_config_path=kube_config_path)
+    health = []
+    pods = kube_client.list_pods(namespace)
+
+    if pods and isinstance(pods, list):
+        health.append(str(kube_client.get_pod_health(pods[0], namespace)))
+
+    messages = [
+        SYSTEM_PROMPT,
+        {"role": "user", "content": PROMPT_PREFIX + str(health)},
+    ]
+
+    k8_summary = openai_client.chat(messages, max_tokens=1000)
+    return k8_summary

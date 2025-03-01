@@ -2,9 +2,9 @@
 
 ![Chat With Logs Film](assets/chat_with_logs_film.png)
 
-## 🤖 AI-Powered Debugging for Loki  
+## 🤖 AI-Powered Debugging for K8 & Loki _by [Dingus](https://www.dingusai.dev)_
 
-Welcome to **Chat with Logs**, your intelligent debugging assistant designed for seamless **Loki** integration! This tool analyses your **production logs**, detects critical issues, and suggests actionable fixes—helping you resolve problems faster and more efficiently.  
+Welcome to **Chat with Logs**, your intelligent debugging assistant designed for seamless **K8** & **Loki** integration! This tool analyses your **production logs**, detects critical issues, and suggests actionable fixes—helping you resolve problems faster and more efficiently.  
 
 Whether you're a **lead engineer** troubleshooting production issues or a **hobbyist** debugging side projects, **Chat with Logs** empowers you with AI-driven insights to **accelerate incident resolution**.  
 
@@ -22,17 +22,17 @@ cp sample.env .env
 
 ##### Configure Environment Variables  
 
-These environment variables are essential for connecting **Chat with Logs** to **Loki**, as well as enabling AI-powered log analysis. The remaining variables can be left as default (Note: if you are using linux, swap `http://host.docker.internal` with your host machine's local IP).
+These environment variables are essential for connecting **Chat with Logs** to **K8** & **Loki**, as well as enabling AI-powered log analysis. The remaining variables can be left as default (Note: if you are using linux, swap `http://host.docker.internal` with your host machine's local IP).
 
 *If you do not wish to start with your Loki production logs, [use this simulation repository](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) for creating simulated logs locally*
 
 
-| Variable Name      | Example Value           | Description                                                    |
-| ------------------ | ----------------------- | -------------------------------------------------------------- |
-| **OPENAI_API_KEY** | `sk-xxxxxxxxxx`         | API key for OpenAI, required for AI-driven log analysis.       |
-| **LOKI_URL**       | `http://localhost:3100` | URL of your Loki instance, where logs are stored and queried.  |
-| **LOKI_JOB_NAME**  | `my-app-logs`           | The Loki job name that Chat with Logs will analyze for issues. |
-
+| Variable Name        | Example Value           | Description                                                    |
+| -------------------- | ----------------------- | -------------------------------------------------------------- |
+| **OPENAI_API_KEY**   | `sk-xxxxxxxxxx`         | API key for OpenAI, required for AI-driven log analysis.       |
+| **LOKI_URL**         | `http://localhost:3100` | URL of your Loki instance, where logs are stored and queried.  |
+| **LOKI_JOB_NAME**    | `my-app-logs`           | The Loki job name that Chat with Logs will analyze for issues. |
+| **KUBE_CONFIG_PATH** | `file_path/config.yaml` | The Kubernetes config file path.                               |
 ---
 
 ### 2️⃣ Usine colima

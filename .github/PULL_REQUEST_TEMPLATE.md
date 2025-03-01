@@ -2,13 +2,11 @@
 
 ## 🔍 Changes  
 
-- **[`< File Name >`]**: [Briefly explain what changed, why it was changed, and how it was implemented]  
-- **[`< File Name >`]**: [Additional changes if applicable]  
-- **[`< File Name >`]**: [Mention any refactoring, bug fixes, or improvements]  
+- **[`<FileName>`]**: [Briefly explain what changed, why it was changed, and how it was implemented]  
+- **[`<FileName>`]**: [Additional changes if applicable]  
+- **[`<FileName>`]**: [Mention any refactoring, bug fixes, or improvements]  
 
-## 📸 Screenshot/Image of Change (if applicable)  
-
-_Add a screenshot or image showcasing the update:_  
+## 📸 Screenshot/Image of Change
 
 ![Screenshot Description](URL or drag & drop the image here)  
 
