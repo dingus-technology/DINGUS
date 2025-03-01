@@ -28,5 +28,7 @@ QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "default_collection
 SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
 QDRANT_VECTOR_SIZE = 384  # 384D for MiniLM
 
+KUBE_CONFIG_PATH = os.getenv("KUBE_CONFIG_PATH", "config.yaml")
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")

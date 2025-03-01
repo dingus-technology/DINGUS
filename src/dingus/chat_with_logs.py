@@ -9,10 +9,16 @@ from fastapi import HTTPException, status
 
 from dingus.llm_clients import OpenAIChatClient
 from dingus.prompts import PROMPT_PREFIX
-from dingus.settings import LOG_DATA_FILE_PATH, OPENAI_API_KEY, OPENAI_MODEL
+from dingus.settings import (
+    KUBE_CONFIG_PATH,
+    LOG_DATA_FILE_PATH,
+    OPENAI_API_KEY,
+    OPENAI_MODEL,
+)
 from dingus.tools.consolidators import (
     create_response,
     get_csv_summary,
+    get_k8_summary,
     get_vector_db_summary,
 )
 
@@ -21,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class ChatWithLogs:
 
-    def __init__(self, use_vector_db: bool = True, vector_db: str = "qdrant"):
+    def __init__(self, use_vector_db: bool = True, vector_db: str = "qdrant", use_k8: bool = False):
         logger.info("ChatWithLogs instance created")
         if not OPENAI_API_KEY:
             raise ValueError("The OPENAI_API_KEY environment variable is not set in .env file.")
@@ -29,6 +35,7 @@ class ChatWithLogs:
         self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
         self.vector_db = vector_db
         self.use_vector_db = use_vector_db
+        self.use_k8 = use_k8
 
     def generate_response(self, messages: list) -> list:
         """
@@ -40,6 +47,12 @@ class ChatWithLogs:
         user_input = user_messages[-1]["content"]
 
         if len(messages) <= 2:
+            k8_summary = (
+                get_k8_summary(openai_client=self.openai_client, kube_config_path=KUBE_CONFIG_PATH)
+                if self.use_k8
+                else None
+            )
+
             if self.use_vector_db:
                 summary = get_vector_db_summary(
                     query_text="CPU", vector_db=self.vector_db, openai_client=self.openai_client
@@ -48,7 +61,8 @@ class ChatWithLogs:
                 summary = get_csv_summary(openai_client=self.openai_client, log_file_path=LOG_DATA_FILE_PATH)
 
             response = create_response(user_input=user_input, summary=summary, openai_client=self.openai_client)
-            messages.append({"role": "assistant", "content": f"{response} \n{str(summary)}"})
+            messages.append({"role": "assistant", "content": f"{response} \n{str(summary)}\n\n{str(k8_summary)}"})
+
         else:
             messages[-1] = {"role": "user", "content": f"{PROMPT_PREFIX} {user_input}"}
             response = self.openai_client.chat(messages)
