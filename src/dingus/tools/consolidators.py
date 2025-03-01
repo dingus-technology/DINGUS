@@ -128,7 +128,7 @@ def get_k8_summary(openai_client: OpenAIChatClient, kube_config_path: str, names
 
     messages = [
         SYSTEM_PROMPT,
-        {"role": "user", "content": PROMPT_PREFIX + health},
+        {"role": "user", "content": PROMPT_PREFIX + str(health)},
     ]
 
     k8_summary = openai_client.chat(messages, max_tokens=1000)
