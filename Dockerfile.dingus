@@ -33,13 +33,15 @@ ENV PATH="$ENV_PATH/bin:$PATH" \
 # Copy and install dependencies
 COPY --chown=$USER_NAME:$USER_NAME /requirements.txt /src/requirements.txt
 RUN pip install --upgrade pip && pip install -r /src/requirements.txt
+RUN python -m spacy download en_core_web_sm
 
 # Copy source code
 COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/ \
     ./src /src/ \
     ./assets /assets/
 
-COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh 
+COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
+COPY --chown=$USER_NAME:$USER_NAME ./.kube /kube/
 
 # Ensure scripts have execute permissions
 RUN chmod +x /scripts/
