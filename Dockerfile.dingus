@@ -38,10 +38,11 @@ RUN python -m spacy download en_core_web_sm
 # Copy source code
 COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/ \
     ./src /src/ \
-    ./assets /assets/
+    ./assets /assets/ \
+    ./.kube /.kube/
 
 COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
-COPY --chown=$USER_NAME:$USER_NAME ./.kube /kube/
+
 
 # Ensure scripts have execute permissions
 RUN chmod +x /scripts/
