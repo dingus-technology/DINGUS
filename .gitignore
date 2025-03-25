@@ -403,3 +403,4 @@ FodyWeavers.xsd
 # Volumes
 data/
 logs/
+.kube/

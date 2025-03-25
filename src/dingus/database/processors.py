@@ -6,13 +6,12 @@ Contains nlp functions to process data.
 import hashlib
 import json
 import logging
-
 import numpy as np
-from sentence_transformers import SentenceTransformer
+import spacy
 
-from dingus.settings import SENTENCE_TRANSFORMER_MODEL
 
 logger = logging.getLogger(__name__)
+
 
 
 def generate_embeddings(texts: list) -> list:
@@ -28,8 +27,8 @@ def generate_embeddings(texts: list) -> list:
     try:
         logger.info("Generating embeddings for the given texts.")
 
-        model = SentenceTransformer(SENTENCE_TRANSFORMER_MODEL)
-        return [np.array(vec) for vec in model.encode(texts, convert_to_numpy=True)]
+        nlp = spacy.load('en_core_web_sm')
+        return [doc.vector for doc in nlp.pipe(texts)]
 
     except Exception as e:
         logger.error(f"Failed to generate embeddings. Error: {e}")

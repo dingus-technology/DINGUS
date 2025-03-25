@@ -10,5 +10,5 @@ pandas==2.2.3
 uvicorn==0.34.0
 streamlit==1.42.0
 qdrant-client==1.13.2
-sentence-transformers==3.4.1
 kubernetes==32.0.1
+spacy==3.8.4
