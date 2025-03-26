@@ -25,12 +25,12 @@ class KubernetesClient:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
-            
+
             logger.info("Kubernetes client configuration updated with host.docker.internal")
-        
+
         except Exception as e:
             raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
-        
+
         try:
             self.api_client = client.CoreV1Api()
             logger.info("Kubernetes client initialised")
