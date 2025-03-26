@@ -28,7 +28,7 @@ WORKDIR /src
 ENV ENV_PATH=/home/$USER_NAME/venv
 RUN python -m venv ${ENV_PATH}
 ENV PATH="$ENV_PATH/bin:$PATH" \
-    PYTHONPATH="${PYTHONPATH}:/src/"
+    PYTHONPATH="${PYTHONPATH}:/src/:/"
 
 # Copy and install dependencies
 COPY --chown=$USER_NAME:$USER_NAME /requirements.txt /src/requirements.txt

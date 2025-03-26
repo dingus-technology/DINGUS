@@ -2,6 +2,9 @@
 This file contains tool calls to interact with kubernetes."""
 
 from kubernetes import client, config
+import logging 
+
+logger = logging.getLogger(__name__)
 
 
 class KubernetesClient:
@@ -21,9 +24,14 @@ class KubernetesClient:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
-            self.api_client = client.CoreV1Api()
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize Kubernetes client: {e}")
+            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
+        
+        try:
+            self.api_client = client.CoreV1Api()
+            logger.info("Kubernetes client initialised")
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
 
     def list_pods(self, namespace: str = "default") -> list | str:
         """
@@ -79,3 +87,12 @@ class KubernetesClient:
                 return {"pod": pod_name, "status": "Unhealthy", "phase": phase}
         except Exception as e:
             return {"error": f"Error checking pod health: {e}"}
+
+
+if __name__ == "__main__":
+
+    kube_config_path = "/.kube/config"
+    kube_client = KubernetesClient(kube_config_path)
+    print(kube_client.list_pods())
+    # print(kube_client.get_pod_logs(pod_name="my-pod"))
+    # print(kube_client.get_pod_health(pod_name="my-pod"))
