@@ -6,12 +6,10 @@ Contains nlp functions to process data.
 import hashlib
 import json
 import logging
-import numpy as np
+
 import spacy
 
-
 logger = logging.getLogger(__name__)
-
 
 
 def generate_embeddings(texts: list) -> list:
@@ -27,7 +25,7 @@ def generate_embeddings(texts: list) -> list:
     try:
         logger.info("Generating embeddings for the given texts.")
 
-        nlp = spacy.load('en_core_web_sm')
+        nlp = spacy.load("en_core_web_sm")
         return [doc.vector for doc in nlp.pipe(texts)]
 
     except Exception as e:

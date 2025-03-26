@@ -5,9 +5,14 @@ ENV PROJECT_NAME="CHAT-WITH-LOGS"
 
 # Update system dependencies
 RUN apt-get update \
-    && apt-get install -y dos2unix \
+    && apt-get install -y dos2unix curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Install kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/
 
 # Create a non-root user
 ARG UID=2000
@@ -43,7 +48,6 @@ COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/ \
 
 COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
 
-
 # Ensure scripts have execute permissions
 RUN chmod +x /scripts/
 RUN dos2unix /scripts/
@@ -51,6 +55,7 @@ RUN dos2unix /scripts/
 # Add aliases
 RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
 RUN echo 'alias code-checks="bash /scripts/code-checks.sh"' >> /home/$USER_NAME/.bashrc
+RUN echo 'alias k="kubectl"' >> /home/$USER_NAME/.bashrc
 
 # Custom shell prompt
 RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_NAME/.bashrc

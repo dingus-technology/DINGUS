@@ -1,8 +1,9 @@
 """k8.py
 This file contains tool calls to interact with kubernetes."""
 
+import logging
+
 from kubernetes import client, config
-import logging 
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,9 @@ class KubernetesClient:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
+            
+            logger.info("Kubernetes client configuration updated with host.docker.internal")
+        
         except Exception as e:
             raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
         
