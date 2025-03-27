@@ -32,8 +32,8 @@ jobs:
 
       - name: Run Code Checks
         run: |
-          docker compose exec -T dingus code-checks
-          docker compose exec -T frontend code-checks
+          docker compose exec -T dingus bash /scripts/code-checks.sh
+          docker compose exec -T frontend bash /scripts/code-checks.sh
 
       - name: Stop Docker Compose
         if: always()
