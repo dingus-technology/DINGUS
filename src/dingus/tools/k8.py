@@ -26,7 +26,7 @@ class KubernetesClient:
             else:
                 config.load_incluster_config()
 
-            logger.info("Kubernetes client configuration updated with host.docker.internal")
+            logger.info("Kubernetes client configuration added")
 
         except Exception as e:
             raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
@@ -70,7 +70,7 @@ class KubernetesClient:
         except Exception as e:
             return f"Error retrieving logs: {e}"
 
-    def get_pod_health(self, pod_name: str, namespace: str = "default") -> dict | str:
+    def get_pod_health(self, pod_name: str, namespace: str = "default") -> dict:
         """
         Check the health status of a specific pod.
 
@@ -85,18 +85,14 @@ class KubernetesClient:
             pod = self.api_client.read_namespaced_pod(name=pod_name, namespace=namespace)
             phase = pod.status.phase
 
-            if phase in ["Running", "Succeeded"]:
-                return {"pod": pod_name, "status": "Healthy", "phase": phase}
-            else:
-                return {"pod": pod_name, "status": "Unhealthy", "phase": phase}
+            return {"pod": pod_name, "phase": phase}
+
         except Exception as e:
+            logger.error(f"Error checking pod health: {e}")
             return {"error": f"Error checking pod health: {e}"}
 
 
 if __name__ == "__main__":
-
     kube_config_path = "/.kube/config"
     kube_client = KubernetesClient(kube_config_path)
-    print(kube_client.list_pods())
-    # print(kube_client.get_pod_logs(pod_name="my-pod"))
-    # print(kube_client.get_pod_health(pod_name="my-pod"))
+
