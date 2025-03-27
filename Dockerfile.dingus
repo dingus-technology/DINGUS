@@ -14,6 +14,8 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && chmod +x kubectl \
     && mv kubectl /usr/local/bin/
 
+RUN mkdir -p /.kube
+
 # Create a non-root user
 ARG UID=2000
 ARG GID=3000
