@@ -14,7 +14,6 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && chmod +x kubectl \
     && mv kubectl /usr/local/bin/
 
-RUN mkdir -p /.kube
 
 # Create a non-root user
 ARG UID=2000
@@ -23,7 +22,7 @@ RUN groupadd -g ${GID} $USER_NAME && \
     useradd -m -u ${UID} --gid ${GID} $USER_NAME
 
 # Make dirs and change owner 
-RUN mkdir -p /logs /data && chown -R $USER_NAME:$USER_NAME /logs /data
+RUN mkdir -p /logs /data /.kube && chown -R $USER_NAME:$USER_NAME /logs /data /.kube
 
 # Set user
 USER $USER_NAME
