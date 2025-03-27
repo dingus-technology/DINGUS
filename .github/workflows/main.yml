@@ -28,7 +28,7 @@ jobs:
       - name: Start Docker Compose Services
         run: |
           docker compose up --build -d
-          docker ps  # Debugging: list running containers
+          docker ps
 
       - name: Run Code Checks
         run: |
