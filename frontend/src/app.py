@@ -18,7 +18,8 @@ ASSISTANT_AVATAR_URL = "/assets/logo-light.png"
 
 st.title("Chat with Dingus 💬")
 st.text(
-    "Dingus will identify issues, find causes and provide actions for problems that currently exist in your infrastructure."
+    "Dingus will identify issues, \
+        find causes and provide actions for problems that currently exist in your infrastructure."
 )
 
 if "messages" not in st.session_state:
