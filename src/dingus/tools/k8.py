@@ -95,4 +95,3 @@ class KubernetesClient:
 if __name__ == "__main__":
     kube_config_path = "/.kube/config"
     kube_client = KubernetesClient(kube_config_path)
-
