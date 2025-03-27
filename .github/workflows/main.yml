@@ -23,10 +23,11 @@ jobs:
         run: |
           cp sample.env .env
           mkdir -p .kube logs data
+          chmod -R 777 .kube logs data
 
       - name: Start Docker Compose Services
         run: |
-          docker compose up --build
+          docker compose up --build -d
           docker ps  # Debugging: list running containers
 
       - name: Run Code Checks
