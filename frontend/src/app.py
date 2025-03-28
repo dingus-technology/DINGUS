@@ -4,16 +4,16 @@ This file supports the streamlit frontend"""
 
 import os
 
-import pandas as pd
-import requests
+import pandas as pd  # type: ignore
+import requests  # type: ignore
 import streamlit as st
 
 from src.utils import stream_data
 
 st.set_page_config(page_title="Chat with Dingus", page_icon="/assets/logo-light.png")
 
-CHAT_API_URL = os.getenv("CHAT_API_URL")
-CHAT_API_ENDPOINT_URL = os.path.join(CHAT_API_URL, "chat")
+CHAT_API_URL = str(os.getenv("CHAT_API_URL", "http://localhost:8000"))
+CHAT_API_ENDPOINT_URL = str(os.path.join(CHAT_API_URL, "chat"))
 ASSISTANT_AVATAR_URL = "/assets/logo-light.png"
 
 st.title("Chat with Dingus 💬")
