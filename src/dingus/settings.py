@@ -26,7 +26,7 @@ QDRANT_PORT = os.getenv("QDRANT_PORT", 6333)
 QDRANT_HOST = f"{os.getenv('QDRANT_HOST', 'http://host.docker.internal')}:{QDRANT_PORT}"
 QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "default_collection")
 SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
-QDRANT_VECTOR_SIZE = 384  # 384D for MiniLM
+QDRANT_VECTOR_SIZE = 96  # 384D for MiniLM or 96 for Spacy
 
 KUBE_CONFIG_PATH = os.getenv("KUBE_CONFIG_PATH", "config.yaml")
 

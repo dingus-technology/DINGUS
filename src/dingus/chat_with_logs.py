@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class ChatWithLogs:
 
-    def __init__(self, use_vector_db: bool = True, vector_db: str = "qdrant", use_k8: bool = False):
+    def __init__(self, use_vector_db: bool = True, vector_db: str = "qdrant", use_k8: bool = True):
         logger.info("ChatWithLogs instance created")
         if not OPENAI_API_KEY:
             raise ValueError("The OPENAI_API_KEY environment variable is not set in .env file.")

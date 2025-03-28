@@ -6,6 +6,7 @@ services:
       args:
         UID: ${UID}
         GID: ${GID}
+    network_mode: "host"
     ports:
       - "${FASTAPI_PORT:-8000}:8000"
     container_name: dingus
@@ -15,7 +16,9 @@ services:
       - ./logs:/logs
       - ./assets:/assets
       - ./scripts:/scripts
+      - ./.kube:/.kube
     environment:
+      - KUBECONFIG=$KUBE_CONFIG_PATH
       - FASTAPI_PORT=8000
       - OPENAI_API_KEY=$OPENAI_API_KEY
       - OPENAI_MODEL=$OPENAI_MODEL

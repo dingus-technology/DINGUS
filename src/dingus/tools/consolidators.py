@@ -123,8 +123,13 @@ def get_k8_summary(openai_client: OpenAIChatClient, kube_config_path: str, names
     health = []
     pods = kube_client.list_pods(namespace)
 
-    if pods and isinstance(pods, list):
-        health.append(str(kube_client.get_pod_health(pods[0], namespace)))
+    logger.info(f"Pods in namespace {namespace}: {pods}")
+
+    for pod in pods:
+        logger.info(f"Getting health for pod: {pod}")
+        health.append(kube_client.get_pod_health(pod, namespace))
+
+    logger.info(f"K8 health summary: {health}")
 
     messages = [
         SYSTEM_PROMPT,

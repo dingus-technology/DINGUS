@@ -1,7 +1,11 @@
 """k8.py
 This file contains tool calls to interact with kubernetes."""
 
+import logging
+
 from kubernetes import client, config
+
+logger = logging.getLogger(__name__)
 
 
 class KubernetesClient:
@@ -21,9 +25,17 @@ class KubernetesClient:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
-            self.api_client = client.CoreV1Api()
+
+            logger.info("Kubernetes client configuration added")
+
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize Kubernetes client: {e}")
+            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
+
+        try:
+            self.api_client = client.CoreV1Api()
+            logger.info("Kubernetes client initialised")
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
 
     def list_pods(self, namespace: str = "default") -> list | str:
         """
@@ -58,7 +70,7 @@ class KubernetesClient:
         except Exception as e:
             return f"Error retrieving logs: {e}"
 
-    def get_pod_health(self, pod_name: str, namespace: str = "default") -> dict | str:
+    def get_pod_health(self, pod_name: str, namespace: str = "default") -> dict:
         """
         Check the health status of a specific pod.
 
@@ -73,9 +85,13 @@ class KubernetesClient:
             pod = self.api_client.read_namespaced_pod(name=pod_name, namespace=namespace)
             phase = pod.status.phase
 
-            if phase in ["Running", "Succeeded"]:
-                return {"pod": pod_name, "status": "Healthy", "phase": phase}
-            else:
-                return {"pod": pod_name, "status": "Unhealthy", "phase": phase}
+            return {"pod": pod_name, "phase": phase}
+
         except Exception as e:
+            logger.error(f"Error checking pod health: {e}")
             return {"error": f"Error checking pod health: {e}"}
+
+
+if __name__ == "__main__":
+    kube_config_path = "/.kube/config"
+    kube_client = KubernetesClient(kube_config_path)

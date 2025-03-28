@@ -19,19 +19,21 @@ jobs:
       - name: Set up Docker BuildX
         uses: docker/setup-buildx-action@v3
 
-      - name: Create .env
+      - name: Create .env and dir
         run: |
           cp sample.env .env
+          mkdir -p .kube logs data
+          chmod -R 777 .kube logs data
 
       - name: Start Docker Compose Services
         run: |
-          docker compose up --build
-          docker ps  # Debugging: list running containers
+          docker compose up --build -d
+          docker ps
 
       - name: Run Code Checks
         run: |
-          docker compose exec -T dingus code-checks
-          docker compose exec -T frontend code-checks
+          docker compose exec -T dingus bash /scripts/code-checks.sh
+          docker compose exec -T frontend bash /scripts/code-checks.sh
 
       - name: Stop Docker Compose
         if: always()
