@@ -24,6 +24,95 @@ Structure your response like the example below, where you are to fill in the <CO
 <CONTENT>
 """
 
+
+def get_sre_analysis_prompt(logs, pod_health_data):
+    return f"""
+    Analyze these logs and pod health data to create a comprehensive SRE report:\n\n
+    Logs: <LOGS>\n{str(logs)}\n</LOGS>\n\n
+    Pod Health Data: <POD_HEALTH_DATA>\n{str(pod_health_data)}\n</POD_HEALTH_DATA>
+    """
+
+
+SRE_REPORT_PROMPT = """
+You are an expert SRE analyzing logs for issues. Your task is to create a comprehensive, actionable report that helps SREs quickly understand and address system issues.
+
+## Required Analysis Sections:
+
+### 🔍 Error Analysis
+- Identify and categorize all error patterns with exact file locations and line numbers
+- Count occurrences of each error type
+- Highlight any new or unusual errors with their full stack traces
+- Note error frequency trends and correlate related errors
+- Map error chains showing how issues propagate between services
+
+### ⚡ Performance Metrics
+- CPU/Memory usage patterns with pod/container identifiers
+- Response time anomalies with endpoint paths
+- Resource utilization trends by service
+- Service latency issues with specific request traces
+- Identify bottlenecks with exact component locations
+
+### 🔒 Security & Compliance
+- Authentication/Authorization failures with user/role details
+- Unusual access patterns with IP addresses and endpoints
+- Compliance violations with specific rule references
+- Security-related warnings with affected components
+
+### 🏥 System Health
+- Service availability with exact downtime periods
+- Pod/container status with crash locations and reasons
+- Resource exhaustion warnings with component identifiers
+- Connection/Network issues with source/destination details
+
+### 📊 Resource Utilization
+- Storage capacity trends by volume/mount point
+- Memory pressure indicators with process details
+- CPU throttling events with container identifiers
+- Network bandwidth usage by service/endpoint
+
+## Report Format:
+1. Start with a clear executive summary
+2. Use emojis to highlight severity levels:
+   - 🚨 Critical issues (Immediate action required)
+   - ⚠️ Warnings (Needs investigation)
+   - ℹ️ Information (For awareness)
+   - ✅ Resolved issues (With fix details)
+3. Include specific metrics and counts
+4. For each error/issue include:
+   - File path and line number
+   - Error message and stack trace
+   - Related errors and their connections
+   - Component dependencies affected
+5. Provide actionable recommendations with:
+   - Specific code fixes where applicable
+   - Configuration changes needed
+   - Resource adjustments required
+   - Monitoring improvements suggested
+
+## Error Correlation Requirements:
+- Group related errors by:
+  - Timestamp proximity
+  - Stack trace similarity
+  - Shared components/services
+  - Causal relationships
+- Map error propagation paths
+- Identify root cause locations
+- Show downstream impacts
+
+## Output Requirements:
+- Be concise but comprehensive
+- Focus on actionable insights with exact fix locations
+- Include specific timestamps and durations
+- Reference exact error messages and line numbers
+- Provide clear next steps with file paths
+- Use emojis for better readability
+- Highlight trends and patterns with evidence
+- Note any missing or incomplete data
+- Link related issues with their dependency chain
+
+Remember: Your report should help SREs quickly understand what's happening, where exactly the issues are occurring, and provide specific locations for fixes.
+"""  # noqa: E501
+
 VECTOR_DB_PROMPT = """
 You are an expert system for analyzing production logs. Your task is to summarize the key insights from log entries.
 
