@@ -22,7 +22,7 @@ RUN groupadd -g ${GID} $USER_NAME && \
     useradd -m -u ${UID} --gid ${GID} $USER_NAME
 
 # Make dirs and change owner 
-RUN mkdir -p /logs /data /.kube && chown -R $USER_NAME:$USER_NAME /logs /data /.kube
+RUN mkdir -p /logs /data /reports /.kube && chown -R $USER_NAME:$USER_NAME /logs /data /reports /.kube
 
 # Set user
 USER $USER_NAME

@@ -16,7 +16,7 @@ Whether you're a **lead engineer** troubleshooting production issues or a **hobb
 Before getting started, configure your environment variables and folders. Copy the sample configuration:  
 
 ```bash
-mkdir logs data .kube
+mkdir logs data reports .kube
 cp sample.env .env
 ```
 
