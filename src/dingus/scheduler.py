@@ -5,7 +5,8 @@ This module handles the scheduling of periodic tasks.
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
+from typing import Optional
 
 from dingus.llm_clients import OpenAIChatClient
 from dingus.settings import KUBE_CONFIG_PATH
@@ -48,26 +49,34 @@ class ReportScheduler:
 
     async def _run_scheduler(self):
         """Run the scheduler loop."""
-        while self._running:
+        hours_run = 0
+        while self._running and hours_run < 12:
             try:
-                # Generate report
-                report = self.report_generator.generate_report()
+                self.report_generator.generate_report()
                 logger.info(f"Generated report at {datetime.now()}")
-
-                # TODO: Store report in database or send to notification system
-
-                # Wait for next hour
                 await asyncio.sleep(3600)  # 1 hour in seconds
+                hours_run += 1
             except Exception as e:
                 logger.error(f"Error in scheduler: {e}")
-                await asyncio.sleep(60)  # Wait 1 minute before retrying
+                await asyncio.sleep(60)
+
+
+class ReportSchedulerSingleton:
+    _scheduler_instance: Optional[ReportScheduler] = None
+
+    @classmethod
+    def get_instance(cls) -> ReportScheduler:
+        """Get or create a ReportScheduler instance."""
+        if cls._scheduler_instance is None:
+            logger.info("Creating new ReportScheduler instance")
+            openai_client = OpenAIChatClient()
+            kube_client = KubernetesClient(kube_config_path=KUBE_CONFIG_PATH)
+            report_generator = LogReportGenerator(openai_client, kube_client)
+            cls._scheduler_instance = ReportScheduler(report_generator)
+
+        return cls._scheduler_instance
 
 
 def get_report_scheduler() -> ReportScheduler:
     """Get or create a ReportScheduler instance."""
-    if not hasattr(get_report_scheduler, "instance"):
-        openai_client = OpenAIChatClient()
-        kube_client = KubernetesClient(kube_config_path=KUBE_CONFIG_PATH)
-        report_generator = LogReportGenerator(openai_client, kube_client)
-        get_report_scheduler.instance = ReportScheduler(report_generator)
-    return get_report_scheduler.instance
+    return ReportSchedulerSingleton.get_instance()

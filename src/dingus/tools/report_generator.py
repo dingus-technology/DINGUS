@@ -6,11 +6,9 @@ This module handles the generation of SRE reports from log analysis.
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
 
 from dingus.llm_clients import OpenAIChatClient
 from dingus.prompts import SRE_REPORT_PROMPT, get_sre_analysis_prompt
-from dingus.settings import KUBE_CONFIG_PATH
 from dingus.tools.k8 import KubernetesClient
 from dingus.tools.vectors import search_logs
 
@@ -21,12 +19,10 @@ class LogReportGenerator:
     def __init__(self, openai_client: OpenAIChatClient, kube_client: KubernetesClient, max_logs: int = 20):
         self.openai_client = openai_client
         self.kube_client = kube_client
-        self.max_logs = max_logs  # Configurable limit for logs sent to LLM
+        self.max_logs = max_logs
 
-        # Use a relative path for the reports directory
         self.reports_dir = "/reports"
 
-        # Ensure reports directory exists
         os.makedirs(self.reports_dir, exist_ok=True)
 
         logger.info(f"Reports will be saved to: {self.reports_dir}")
@@ -48,7 +44,6 @@ Time Period: {report['time_period']}
 ## Pod Statuses
 """
 
-        # Handle pod statuses
         pod_statuses = report.get("pod_statuses", {})
         if not pod_statuses:
             markdown += "\nNo pod status information available.\n"
@@ -62,7 +57,7 @@ Time Period: {report['time_period']}
                 else:
                     markdown += f"Status: {status}\n"
 
-        markdown += f"\n## Summary\n"
+        markdown += "\n## Summary\n"
         markdown += f"Issues Found: {'Yes' if report.get('issues_found', False) else 'No'}\n"
 
         return markdown
@@ -86,13 +81,10 @@ Time Period: {report['time_period']}
 
     def _analyze_logs(self, logs: list[dict]) -> str:
         """Analyze logs using LLM to identify issues and generate insights."""
-        # Limit the number of logs to reduce token usage
         if len(logs) > self.max_logs:
             logs = logs[: self.max_logs]
             logger.info(f"Limiting logs to {self.max_logs} entries to reduce token usage")
 
-        # Create messages with the new SRE report prompt
-        # Get pod health data to include in analysis
         pod_health_data = self._get_pod_status()
 
         messages = [
@@ -123,13 +115,10 @@ Time Period: {report['time_period']}
         # TODO: More detailed vector db search
         recent_logs = search_logs(query_text="CPU", limit=100)
 
-        # Get pod statuses
         pod_statuses = self._get_pod_status(namespace)
 
-        # Analyze logs
         analysis = self._analyze_logs(recent_logs)
 
-        # Generate final report
         timestamp = datetime.now()
         report = {
             "timestamp": timestamp.isoformat(),
@@ -139,7 +128,6 @@ Time Period: {report['time_period']}
             "issues_found": len(recent_logs) > 0,
         }
 
-        # Format and save report
         markdown = self._format_markdown(report)
         self._save_report(markdown, timestamp)
 
