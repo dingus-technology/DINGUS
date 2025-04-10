@@ -36,4 +36,6 @@ if [[ $? -ne 0 ]]; then
     echo -e "${RED} ❌ mypy failed with errors:${NC}"
     echo -e "${YELLOW}$mypy_output${NC}"
     exit 1  # Fail the pipeline if mypy fails
+else
+    echo -e "${GREEN} ✨ 🎉 mypy check passed successfully! 🎯 ✅${NC}"
 fi
