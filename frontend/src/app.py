@@ -17,10 +17,7 @@ CHAT_API_ENDPOINT_URL = str(os.path.join(CHAT_API_URL, "chat"))
 ASSISTANT_AVATAR_URL = "/assets/logo-light.png"
 
 st.title("Chat with Dingus 💬")
-st.text(
-    "Dingus will identify issues, \
-        find causes and provide actions for problems that currently exist in your infrastructure."
-)
+st.text("Dingus will identify issues, find causes and provide actions for bugs in your infrastructure.")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

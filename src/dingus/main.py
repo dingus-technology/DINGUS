@@ -27,8 +27,19 @@ logger.info("Creating FastAPI app")
 async def lifespan(app: FastAPI):
     logger.info("FastAPI startup: Running setup.")
     preprocess(app)
+
+    # Start the report scheduler
+    logger.info("FastAPI startup: Starting report scheduler")
+    await app.state.report_scheduler.start()
+    logger.info("FastAPI startup: Report scheduler started")
+
     logger.info("FastAPI startup: setup completed")
     yield
+
+    # Stop the report scheduler
+    logger.info("FastAPI shutdown: Stopping report scheduler")
+    await app.state.report_scheduler.stop()
+    logger.info("FastAPI shutdown: Report scheduler stopped")
 
 
 app = FastAPI(docs_url=None, redoc_url=None, title=APP_TITLE, lifespan=lifespan)

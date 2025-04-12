@@ -16,6 +16,7 @@ services:
       - ./logs:/logs
       - ./assets:/assets
       - ./scripts:/scripts
+      - ./reports:/reports
       - ./.kube:/.kube
     environment:
       - KUBECONFIG=$KUBE_CONFIG_PATH

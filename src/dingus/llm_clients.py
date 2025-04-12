@@ -9,7 +9,7 @@ import logging
 from openai import OpenAI
 
 from dingus.logger import set_logging
-from dingus.settings import MODEL_PRICING
+from dingus.settings import MODEL_PRICING, OPENAI_API_KEY
 
 set_logging()
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAIChatClient:
-    def __init__(self, api_key: str, model: str = "gpt-4o"):
+    def __init__(self, api_key: str = OPENAI_API_KEY, model: str = "gpt-4o"):
         """
         Initialize the OpenAIChatClient.
 
