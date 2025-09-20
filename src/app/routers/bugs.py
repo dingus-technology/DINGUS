@@ -1,0 +1,68 @@
+import asyncio
+import json
+import logging
+import os
+
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
+
+from app.tools.log_scanner import LogScanner
+
+router = APIRouter(tags=["Bug Management"])
+logger = logging.getLogger(__name__)
+
+BUGS_DIR = "/data/bugs/"
+
+
+@router.get("/bugs")
+def list_bugs():
+    logger.info("Listing Bugs...")
+    try:
+        if not os.path.exists(BUGS_DIR):
+            return {"bugs": []}
+        files = [f for f in os.listdir(BUGS_DIR) if f.endswith(".json")]
+        logger.info(files)
+        files.sort(reverse=True)
+        bugs = []
+        for fname in files:
+            path = os.path.join(BUGS_DIR, fname)
+            try:
+                with open(path, "r") as f:
+                    bug = json.load(f)
+                bugs.append({"filename": fname, "bug": bug})
+            except Exception as e:
+                bugs.append({"filename": fname, "error": str(e)})
+        return {"bugs": bugs}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "reason": str(e)})
+
+
+@router.post("/scan")
+def scan(payload: dict = {}):
+    """Trigger a Scan for bugs (manual log scan)."""
+    try:
+        # Use config from payload or defaults
+        loki_base_url = payload.get("loki_base_url", "http://host.docker.internal:3100")
+        job_name = payload.get("job_name", "cpu_monitor")
+        kube_config_path = payload.get("kube_config_path", "/.kube/config")
+        log_limit = payload.get("log_limit", 100)
+        scanner = LogScanner(loki_base_url, job_name, kube_config_path, log_limit)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(scanner.run_once())
+        return {"status": "success"}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "fail", "reason": str(e)})
+
+
+@router.delete("/bug/{filename}")
+def delete_bug(filename: str):
+    """Delete a bug JSON file by filename."""
+    try:
+        path = os.path.join(BUGS_DIR, filename)
+        if not os.path.exists(path):
+            return JSONResponse(status_code=404, content={"status": "error", "reason": "File not found"})
+        os.remove(path)
+        return {"status": "success"}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "reason": str(e)})

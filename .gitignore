@@ -405,3 +405,5 @@ data/
 logs/
 reports/
 .kube/config
+
+.mypy_cache/
