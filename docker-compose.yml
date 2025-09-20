@@ -2,22 +2,22 @@ services:
   dingus:
     build:
       context: .
-      dockerfile: Dockerfile.dingus
+      dockerfile: Dockerfile
       args:
         UID: ${UID}
         GID: ${GID}
     network_mode: "host"
     ports:
       - "${FASTAPI_PORT:-8000}:8000"
+      - "${STREAMLIT_PORT:-8501}:8501"
     container_name: dingus
     volumes:
       - ./src:/src
+      - ./.kube:/.kube
+      - ./scripts:/scripts
       - ./data:/data
       - ./logs:/logs
-      - ./assets:/assets
-      - ./scripts:/scripts
       - ./reports:/reports
-      - ./.kube:/.kube
     environment:
       - KUBECONFIG=$KUBE_CONFIG_PATH
       - FASTAPI_PORT=8000
@@ -30,26 +30,6 @@ services:
       - QDRANT_HOST=$QDRANT_HOST
       - QDRANT_COLLECTION_NAME=$QDRANT_COLLECTION_NAME
       - KUBE_CONFIG_PATH=$KUBE_CONFIG_PATH
-
-  frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile.frontend
-      args:
-        UID: ${UID}
-        GID: ${GID}
-    ports:
-      - "${STREAMLIT_PORT:-8501}:8501"
-    container_name: frontend
-    volumes:
-      - ./frontend/src:/src
-      - ./data:/data
-      - ./logs:/logs
-      - ./assets:/assets
-      - ./scripts:/scripts
-    environment:
-      - STREAMLIT_PORT=8501
-      - CHAT_API_URL=$CHAT_API_URL
   
   qdrant:
     image: qdrant/qdrant:latest

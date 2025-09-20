@@ -12,3 +12,5 @@ streamlit==1.42.0
 qdrant-client==1.13.2
 kubernetes==32.0.1
 spacy==3.8.4
+requests==2.31.0
+psutil==6.1.0

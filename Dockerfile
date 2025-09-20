@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 ENV USER_NAME=dingus
-ENV PROJECT_NAME="CHAT-WITH-LOGS"
+ENV PROJECT_NAME="DINGUS"
 
 # Update system dependencies
 RUN apt-get update \
@@ -42,16 +42,9 @@ RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 RUN python -m spacy download en_core_web_sm
 
 # Copy source code
-COPY --chown=$USER_NAME:$USER_NAME ./scripts /scripts/ \
+COPY --chown=$USER_NAME:$USER_NAME \
     ./src /src/ \
-    ./assets /assets/ \
-    ./.kube /.kube/
-
-COPY --chown=$USER_NAME:$USER_NAME ./src/entrypoint.sh /scripts/entrypoint.sh
-
-# Ensure scripts have execute permissions
-RUN chmod +x /scripts/
-RUN dos2unix /scripts/
+    ./assets /assets/
 
 # Add aliases
 RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
