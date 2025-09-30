@@ -11,7 +11,6 @@ from app.prompts import PROMPT_PREFIX
 from app.settings import (
     KUBE_CONFIG_PATH,
     LOG_DATA_FILE_PATH,
-    OPENAI_API_KEY,
     OPENAI_MODEL,
 )
 from app.tools.consolidators import (
@@ -29,10 +28,8 @@ class ChatWithLogs:
 
     def __init__(self, use_vector_db: bool = True, vector_db: str = "qdrant", use_k8: bool = True):
         logger.info("ChatWithLogs instance created")
-        if not OPENAI_API_KEY:
-            raise ValueError("The OPENAI_API_KEY environment variable is not set in .env file.")
-
-        self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
+        # Allow running without .env by deferring API key provision to runtime config/UI
+        self.openai_client = OpenAIChatClient(model=OPENAI_MODEL)
         self.vector_db = vector_db
         self.use_vector_db = use_vector_db
         self.use_k8 = use_k8
