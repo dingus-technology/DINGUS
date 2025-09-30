@@ -11,10 +11,47 @@ Before getting started, configure your environment variables and folders. Copy t
 
 ```bash
 mkdir logs data reports .kube
-cp sample.env .env
 ```
 
+### 2️⃣ Using colima
+
+If running on mac, use colima for reduced overheads rather that Docker Desktop
+
+```bash
+colima start
+```
+
+## 🐳 Running with Docker
+
+### Build & Start the Docker Container
+
+Run the following command to build and start everything:
+
+```bash
+docker compose up --build
+```
+All ready to go! head to http://0.0.0.0:8501/ and insert your configs.
+*If you do not wish to start with your Loki production logs, [use this simulation repository](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) for creating simulated logs locally*
+
+
+### ✅ Run Code Checks (dev only)
+
+Keep your code clean and formatted:
+```bash
+docker compose exec dingus bash
+```
+```bash
+format-checks
+code-checks
+```
+
+## Optional 
+
 ##### Configure Environment Variables  
+
+```bash
+cp sample.env .env
+```
 
 These environment variables are essential for connecting to **K8** & **Loki** (Note: if you are using linux, swap `http://host.docker.internal` with your host machine's local IP).
 
@@ -29,37 +66,4 @@ These environment variables are essential for connecting to **K8** & **Loki** (N
 | **KUBE_CONFIG_PATH** | `file_path/config.yaml` | The Kubernetes config file path.                               |
 ---
 
-### 2️⃣ Using colima
 
-If running on mac, use colima for reduced overheads rather that Docker Desktop
-
-```bash
-colima start
-```
-
-## 🐳 Running with Docker
-
-### 1. Build & Start the Docker Container
-
-Run the following command to build and start everything:
-
-```bash
-docker compose up --build
-```
-
-This will pull dependencies, build the image, and fire up the container.
-
-### 2. Enter the App Container
-
-```bash
-docker compose exec dingus bash
-```
-
-### ✅ 3. Run Code Checks
-
-Keep your code clean and formatted:
-
-```bash
-format-checks
-code-checks
-```
