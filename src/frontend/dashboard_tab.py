@@ -17,7 +17,13 @@ def fetch_reports():
             st.error("Failed to fetch report list.")
             return []
     except Exception as e:
-        st.error(f"Failed to fetch report list: {e}")
+        err_msg = str(e)
+        if "Failed to establish a new connection" in err_msg or "Max retries exceeded" in err_msg:
+            st.info(
+                "Backend API is not reachable. Please set connection and API key in the sidebar, then click Update."
+            )
+        else:
+            st.error(f"Failed to fetch report list: {e}")
         return []
 
 

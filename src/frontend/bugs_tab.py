@@ -18,7 +18,13 @@ def fetch_bugs():
             st.error("Failed to fetch bug list.")
             return []
     except Exception as e:
-        st.error(f"Failed to fetch bug list: {e}")
+        err_msg = str(e)
+        if "Failed to establish a new connection" in err_msg or "Max retries exceeded" in err_msg:
+            st.info(
+                "Backend API is not reachable. Please set Loki URL, Job Name, K8s Config Path, and OpenAI API Key in the sidebar, then click Update."
+            )
+        else:
+            st.error(f"Failed to fetch bug list: {e}")
         return []
 
 
@@ -30,7 +36,13 @@ def fetch_investigations():
         else:
             return []
     except Exception as e:
-        st.error(f"Failed to fetch investigations: {e}")
+        err_msg = str(e)
+        if "Failed to establish a new connection" in err_msg or "Max retries exceeded" in err_msg:
+            st.info(
+                "Backend API is not reachable. Configure connection details in the sidebar and click Update."
+            )
+        else:
+            st.error(f"Failed to fetch investigations: {e}")
         return []
 
 
@@ -59,6 +71,7 @@ def trigger_scan():
         "loki_base_url": st.session_state.get("loki_url_input"),
         "job_name": st.session_state.get("loki_job_input"),
         "kube_config_path": st.session_state.get("kube_config_input"),
+        "open_ai_api_key": st.session_state.get("openai_api_key_input"),
     }
     try:
         resp = requests.post(f"{API_URL}/scan", json=payload)
