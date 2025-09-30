@@ -20,22 +20,20 @@ class KubernetesClient:
         Raises:
             RuntimeError: If the client fails to initialize.
         """
+        self.api_client = None
         try:
             if kube_config_path:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
-
             logger.info("Kubernetes client configuration added")
-
+            try:
+                self.api_client = client.CoreV1Api()
+                logger.info("Kubernetes client initialised")
+            except Exception as e:
+                logger.warning(f"Kubernetes CoreV1Api init failed, continuing without k8s: {e}")
         except Exception as e:
-            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
-
-        try:
-            self.api_client = client.CoreV1Api()
-            logger.info("Kubernetes client initialised")
-        except Exception as e:
-            raise RuntimeError(f"Failed to initialise Kubernetes client: {e}")
+            logger.warning(f"Kubernetes config not available yet, continuing without k8s: {e}")
 
     def list_pods(self, namespace: str = "default") -> list | str | None:
         """
@@ -47,6 +45,9 @@ class KubernetesClient:
         Returns:
             list | str: A list of pod names or an error message.
         """
+        if not self.api_client:
+            logger.warning("Kubernetes client not initialised; list_pods returning None")
+            return None
         try:
             pods = self.api_client.list_namespaced_pod(namespace)
             return [pod.metadata.name for pod in pods.items]
@@ -65,6 +66,8 @@ class KubernetesClient:
         Returns:
             list | str: The pod logs or an error dictionary.
         """
+        if not self.api_client:
+            return "Kubernetes client not initialised"
         try:
             logs = self.api_client.read_namespaced_pod_log(pod_name, namespace)
             return logs
@@ -82,6 +85,8 @@ class KubernetesClient:
         Returns:
             dict | str: A dictionary containing pod status details, including container statuses.
         """
+        if not self.api_client:
+            return {"error": "Kubernetes client not initialised"}
         try:
             pod = self.api_client.read_namespaced_pod(name=pod_name, namespace=namespace)
             phase = pod.status.phase
