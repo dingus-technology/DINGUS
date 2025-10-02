@@ -20,10 +20,7 @@ router = APIRouter(tags=["Configuration"])
 async def update_config(payload: dict, request: Request):
     app = request.app
     if hasattr(app.state, "scheduler") and app.state.scheduler is not None:
-        # Determine API key: use provided if truthy, otherwise keep existing
-        incoming_key = payload.get("open_ai_api_key")
 
-        # Persist to in-memory config (only overwrite key if provided)
         app.state.config.update(
             {
                 "loki_base_url": payload["loki_base_url"],
