@@ -26,14 +26,13 @@ class KubernetesClient:
                 config.load_kube_config(kube_config_path)
             else:
                 config.load_incluster_config()
-            logger.info("Kubernetes client configuration added")
-            try:
-                self.api_client = client.CoreV1Api()
-                logger.info("Kubernetes client initialised")
-            except Exception as e:
-                logger.warning(f"Kubernetes CoreV1Api init failed, continuing without k8s: {e}")
         except Exception as e:
             logger.warning(f"Kubernetes config not available yet, continuing without k8s: {e}")
+        try:
+            self.api_client = client.CoreV1Api()
+            logger.info("Kubernetes client initialised")
+        except Exception as e:
+            logger.warning(f"Kubernetes CoreV1Api init failed, continuing without k8s: {e}")
 
     def list_pods(self, namespace: str = "default") -> list | str | None:
         """

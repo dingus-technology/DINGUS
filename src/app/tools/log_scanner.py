@@ -54,7 +54,15 @@ Example:
 class LogScanner(LokiClient, KubernetesClient):
     def __init__(self, loki_base_url, job_name, open_ai_api_key, kube_config_path=None, log_limit=100):
         LokiClient.__init__(self, loki_base_url=loki_base_url, job_name=job_name)
-        KubernetesClient.__init__(self, kube_config_path=kube_config_path)
+        # Initialize Kubernetes only if a path is provided; otherwise, skip
+        self.k8s_enabled = bool(kube_config_path)
+        if self.k8s_enabled:
+            KubernetesClient.__init__(self, kube_config_path=kube_config_path)
+            # If init failed, api_client will be None per KubernetesClient
+            self.k8s_enabled = getattr(self, "api_client", None) is not None
+        else:
+            # Provide a stub so any accidental calls won't break
+            self.api_client = None
         self.log_limit = log_limit
         self.openai_client = OpenAIChatClient(api_key=open_ai_api_key, model=OPENAI_MODEL)
         self.vector_db = QdrantDatabaseClient()

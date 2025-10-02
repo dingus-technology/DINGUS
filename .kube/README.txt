@@ -1,0 +1,1 @@
+Place your Kubernetes config file in here.
