@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 from app.connectors import fetch_loki_logs
 from app.database.vector_db import QdrantDatabaseClient
-from app.settings import OPENAI_API_KEY, OPENAI_MODEL
+from app.settings import OPENAI_MODEL
 from app.tools.k8_client import KubernetesClient
 from app.tools.llm_client import OpenAIChatClient
 from app.tools.loki_client import LokiClient
@@ -52,11 +52,11 @@ Example:
 
 
 class LogScanner(LokiClient, KubernetesClient):
-    def __init__(self, loki_base_url, job_name, kube_config_path=None, log_limit=100):
+    def __init__(self, loki_base_url, job_name, open_ai_api_key, kube_config_path=None, log_limit=100):
         LokiClient.__init__(self, loki_base_url=loki_base_url, job_name=job_name)
         KubernetesClient.__init__(self, kube_config_path=kube_config_path)
         self.log_limit = log_limit
-        self.openai_client = OpenAIChatClient(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
+        self.openai_client = OpenAIChatClient(api_key=open_ai_api_key, model=OPENAI_MODEL)
         self.vector_db = QdrantDatabaseClient()
         self.last_bug_signature = None
         self._running = False

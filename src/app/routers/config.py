@@ -20,6 +20,15 @@ router = APIRouter(tags=["Configuration"])
 async def update_config(payload: dict, request: Request):
     app = request.app
     if hasattr(app.state, "scheduler") and app.state.scheduler is not None:
+
+        app.state.config.update(
+            {
+                "loki_base_url": payload["loki_base_url"],
+                "job_name": payload["job_name"],
+                "kube_config_path": payload["kube_config_path"],
+                "open_ai_api_key": payload["open_ai_api_key"],
+            }
+        )
         await app.state.scheduler.update_config(
             loki_base_url=payload["loki_base_url"],
             job_name=payload["job_name"],
@@ -29,6 +38,26 @@ async def update_config(payload: dict, request: Request):
         return {"status": "success"}
     else:
         return JSONResponse(status_code=500, content={"status": "fail", "reason": "Scheduler not initialized"})
+
+
+@router.get("/config")
+def get_config(request: Request):
+    """Return current runtime configuration."""
+    try:
+        app = request.app
+        cfg = getattr(app.state, "config", {})
+        return {
+            "status": "success",
+            "config": {
+                "loki_base_url": cfg.get("loki_base_url"),
+                "job_name": cfg.get("job_name"),
+                "kube_config_path": cfg.get("kube_config_path"),
+                "open_ai_api_key": bool(cfg.get("open_ai_api_key")),
+                "openai_model": cfg.get("openai_model"),
+            },
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "reason": str(e)})
 
 
 @router.get("/check_loki")
@@ -78,7 +107,7 @@ def check_openai(payload: dict):
         if not api_key:
             return JSONResponse(status_code=400, content={"status": "fail", "reason": "No API key provided"})
 
-        test_client = OpenAIChatClient()
+        test_client = OpenAIChatClient(api_key=api_key)
         test_client.client.api_key = api_key
         response = test_client.client.models.list()
         if response:

@@ -8,7 +8,7 @@ import logging
 import os
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app.tools.investigation_agent import InvestigationAgent
@@ -20,7 +20,7 @@ INVESTIGATIONS_DIR = "/data/investigations/"
 
 
 @router.post("/investigation/start")
-def start_investigation(payload: dict[str, Any]):
+def start_investigation(payload: dict[str, Any], request: Request):
     """Start a new investigation for a bug."""
     try:
         bug_info = payload.get("bug_info", {})
@@ -31,7 +31,14 @@ def start_investigation(payload: dict[str, Any]):
         os.makedirs(INVESTIGATIONS_DIR, exist_ok=True)
 
         # Start investigation
+        # Optionally set runtime API key/model for the agent from app.state.config
         agent = InvestigationAgent()
+        try:
+            cfg = getattr(request.app.state, "config", {})
+            if cfg and cfg.get("open_ai_api_key"):
+                agent.llm_client.client.api_key = cfg.get("open_ai_api_key")  # type: ignore[attr-defined]
+        except Exception:
+            pass
         investigation_result = agent.start_investigation(bug_info)
 
         # Save investigation result

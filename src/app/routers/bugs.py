@@ -38,15 +38,16 @@ def list_bugs():
 
 
 @router.post("/scan")
-def scan(payload: dict = {}):
+def scan(payload: dict):
     """Trigger a Scan for bugs (manual log scan)."""
     try:
-        # Use config from payload or defaults
-        loki_base_url = payload.get("loki_base_url", "http://host.docker.internal:3100")
-        job_name = payload.get("job_name", "cpu_monitor")
-        kube_config_path = payload.get("kube_config_path", "/.kube/config")
+        loki_base_url = payload.get("loki_base_url")
+        job_name = payload.get("job_name")
+        kube_config_path = payload.get("kube_config_path")
+        open_ai_api_key = payload.get("open_ai_api_key")
         log_limit = payload.get("log_limit", 100)
-        scanner = LogScanner(loki_base_url, job_name, kube_config_path, log_limit)
+
+        scanner = LogScanner(loki_base_url, job_name, open_ai_api_key, kube_config_path, log_limit)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(scanner.run_once())

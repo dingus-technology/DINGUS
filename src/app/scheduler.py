@@ -7,7 +7,6 @@ import asyncio
 import logging
 from datetime import datetime
 
-from app.settings import KUBE_CONFIG_PATH, LOKI_JOB_NAME, LOKI_URL, OPENAI_API_KEY
 from app.tools.k8_client import KubernetesClient
 from app.tools.llm_client import OpenAIChatClient
 from app.tools.log_scanner import LogScanner
@@ -20,10 +19,10 @@ logger = logging.getLogger(__name__)
 class Scheduler:
     def __init__(
         self,
-        loki_base_url: str = LOKI_URL,
-        job_name: str = LOKI_JOB_NAME,
-        open_ai_api_key: str = OPENAI_API_KEY,
-        kube_config_path: str = KUBE_CONFIG_PATH,
+        loki_base_url: str,
+        job_name: str,
+        open_ai_api_key: str,
+        kube_config_path: str,
         frequency_in_hours: int | None = 1,
     ):
         logger.info("Creating new Scheduler instance with default dependencies")
@@ -36,9 +35,11 @@ class Scheduler:
         log_scanner = LogScanner(
             loki_base_url=loki_base_url,
             job_name=job_name,
+            open_ai_api_key=open_ai_api_key,
             kube_config_path=kube_config_path,
             log_limit=100,
         )
+        log_scanner.openai_client = openai_client
         frequency_in_hours = frequency_in_hours or 1
 
         self.report_generator = report_generator
@@ -90,8 +91,10 @@ class Scheduler:
             loki_base_url=loki_base_url,
             job_name=job_name,
             kube_config_path=kube_config_path,
+            open_ai_api_key=open_ai_api_key,
             log_limit=100,
         )
+        log_scanner.openai_client = openai_client
 
         frequency_in_hours = frequency_in_hours or 1
         self.report_generator = report_generator

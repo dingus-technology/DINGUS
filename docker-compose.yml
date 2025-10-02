@@ -3,9 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        UID: ${UID}
-        GID: ${GID}
     network_mode: "host"
     ports:
       - "${FASTAPI_PORT:-8000}:8000"
@@ -19,17 +16,7 @@ services:
       - ./logs:/logs
       - ./reports:/reports
     environment:
-      - KUBECONFIG=$KUBE_CONFIG_PATH
       - FASTAPI_PORT=8000
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - OPENAI_MODEL=$OPENAI_MODEL
-      - CHAT_API_URL=$CHAT_API_URL
-      - LOKI_URL=$LOKI_URL
-      - LOKI_JOB_NAME=$LOKI_JOB_NAME
-      - QDRANT_PORT=$QDRANT_PORT
-      - QDRANT_HOST=$QDRANT_HOST
-      - QDRANT_COLLECTION_NAME=$QDRANT_COLLECTION_NAME
-      - KUBE_CONFIG_PATH=$KUBE_CONFIG_PATH
   
   qdrant:
     image: qdrant/qdrant:latest

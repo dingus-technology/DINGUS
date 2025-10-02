@@ -13,7 +13,6 @@ from fastapi.staticfiles import StaticFiles
 
 from app.logger import set_logging
 from app.routers.bugs import router as bugs_router
-from app.routers.chat import router as chat_router
 from app.routers.config import router as config_router
 from app.routers.investigation import router as investigation_router
 from app.settings import APP_TITLE
@@ -43,7 +42,7 @@ async def lifespan(app: FastAPI):
     logger.info("FastAPI shutdown: Report scheduler stopped")
 
 
-routes = [chat_router, config_router, bugs_router, investigation_router]
+routes = [config_router, bugs_router, investigation_router]
 
 app = FastAPI(docs_url=None, redoc_url=None, title=APP_TITLE, lifespan=lifespan)
 for r in routes:

@@ -32,25 +32,43 @@ def render_sidebar_config():
         st.session_state["loki_status"] = None
     if "k8s_status" not in st.session_state:
         st.session_state["k8s_status"] = None
+    # Prefill from backend runtime config if available
+    try:
+        cfg_resp = requests.get(f"{API_URL}/config", timeout=5)
+        cfg_json = cfg_resp.json() if cfg_resp.ok else {"config": {}}
+        backend_cfg = cfg_json.get("config", {})
+    except Exception:
+        backend_cfg = {}
+
     with st.sidebar.form("config_form"):
         loki_base_url = st.text_input(
             "Loki URL",
-            value=st.session_state.get("loki_url_input", os.getenv("LOKI_URL", "http://host.docker.internal:3100")),
+            value=st.session_state.get(
+                "loki_url_input",
+                backend_cfg.get("loki_base_url", os.getenv("LOKI_URL", "http://host.docker.internal:3100")),
+            ),
             key="loki_url_input",
         )
         job_name = st.text_input(
             "Loki Job Name",
-            value=st.session_state.get("loki_job_input", os.getenv("LOKI_JOB_NAME", "cpu_monitor")),
+            value=st.session_state.get(
+                "loki_job_input", backend_cfg.get("job_name", os.getenv("LOKI_JOB_NAME", "cpu_monitor"))
+            ),
             key="loki_job_input",
         )
         kube_config_path = st.text_input(
             "K8s Config Path",
-            value=st.session_state.get("kube_config_input", os.getenv("KUBE_CONFIG_PATH", "/.kube/config")),
+            value=st.session_state.get(
+                "kube_config_input", backend_cfg.get("kube_config_path", os.getenv("KUBE_CONFIG_PATH", "/.kube/config"))
+            ),
             key="kube_config_input",
         )
         open_ai_api_key = st.text_input(
             "OpenAI API Key",
-            value=st.session_state.get("openai_api_key_input", os.getenv("OPENAI_API_KEY", "")),
+            value=st.session_state.get(
+                "openai_api_key_input",
+                "" if not backend_cfg.get("open_ai_api_key") else "********",
+            ),
             type="password",
             key="openai_api_key_input",
         )

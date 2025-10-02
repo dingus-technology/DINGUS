@@ -7,13 +7,13 @@ from datetime import datetime, timedelta
 
 from app.connectors import fetch_loki_logs
 from app.database.vector_db import QdrantDatabaseClient
-from app.settings import LOKI_END_HOURS_AGO, LOKI_JOB_NAME, LOKI_URL
+from app.settings import LOKI_END_HOURS_AGO
 
 logger = logging.getLogger(__name__)
 
 
 class LokiClient:
-    def __init__(self, loki_base_url: str = LOKI_URL, job_name: str = LOKI_JOB_NAME):
+    def __init__(self, loki_base_url: str, job_name: str):
         self.loki_base_url = loki_base_url
         self.job_name = job_name
         self.database_client = QdrantDatabaseClient()
