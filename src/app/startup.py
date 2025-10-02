@@ -6,9 +6,9 @@ import logging
 
 from fastapi import FastAPI
 
+from app import settings as app_settings
 from app.database.vector_db import QdrantDatabaseClient
 from app.scheduler import Scheduler
-from app import settings as app_settings
 
 logger = logging.getLogger(__name__)
 

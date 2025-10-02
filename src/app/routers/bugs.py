@@ -48,7 +48,7 @@ def scan(payload: dict = {}, request: Request = None):
         kube_config_path = payload.get("kube_config_path") or cfg.get("kube_config_path")
         open_ai_api_key = payload.get("open_ai_api_key") or cfg.get("open_ai_api_key")
         log_limit = payload.get("log_limit", 100)
-        
+
         scanner = LogScanner(loki_base_url, job_name, open_ai_api_key, kube_config_path, log_limit)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)

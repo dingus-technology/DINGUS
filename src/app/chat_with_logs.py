@@ -8,11 +8,7 @@ import logging
 from fastapi import HTTPException, status
 
 from app.prompts import PROMPT_PREFIX
-from app.settings import (
-    KUBE_CONFIG_PATH,
-    LOG_DATA_FILE_PATH,
-    OPENAI_MODEL,
-)
+from app.settings import KUBE_CONFIG_PATH, LOG_DATA_FILE_PATH, OPENAI_MODEL
 from app.tools.consolidators import (
     create_response,
     get_csv_summary,

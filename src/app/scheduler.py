@@ -6,8 +6,8 @@ This module handles the scheduling of periodic tasks.
 import asyncio
 import logging
 from datetime import datetime
-
 from typing import Optional
+
 from app.tools.k8_client import KubernetesClient
 from app.tools.llm_client import OpenAIChatClient
 from app.tools.log_scanner import LogScanner

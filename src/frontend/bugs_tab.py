@@ -38,9 +38,7 @@ def fetch_investigations():
     except Exception as e:
         err_msg = str(e)
         if "Failed to establish a new connection" in err_msg or "Max retries exceeded" in err_msg:
-            st.info(
-                "Backend API is not reachable. Configure connection details in the sidebar and click Update."
-            )
+            st.info("Backend API is not reachable. Configure connection details in the sidebar and click Update.")
         else:
             st.error(f"Failed to fetch investigations: {e}")
         return []
