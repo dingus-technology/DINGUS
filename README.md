@@ -36,8 +36,6 @@ On macOS, use [Colima](https://github.com/abiosoft/colima) for reduced overhead 
 colima start
 ```
 
----
-
 ## 🐳 Run Dingus with Docker
 
 ### Build & Start
@@ -52,7 +50,8 @@ Once running, open [http://0.0.0.0:8501/](http://0.0.0.0:8501/) and add your con
 
 👉 No production logs handy? Try our [simulation repo](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) to generate fake logs locally.
 
----
+> **Note:** Not on MacOS? Replace `http://host.docker.internal` with your host machine’s local IP in `DINGUS/docker-compose`.
+
 
 ## ✅ Development: Run Code Checks
 
@@ -69,7 +68,6 @@ format-checks
 code-checks
 ```
 
-
 ## ⚙️ Optional Configuration
 
 Set environment variables by copying the sample file:
@@ -79,8 +77,6 @@ cp sample.env .env
 ```
 
 These are required for connecting Dingus to **K8s** and **Loki**.
-
-> **Note:** On Linux, replace `http://host.docker.internal` with your host machine’s local IP.
 
 👉 Don’t want to connect Loki yet? Use the [simulation repo](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) to get started locally.
 

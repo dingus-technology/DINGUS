@@ -14,6 +14,7 @@ services:
       - ./.kube:/.kube
     environment:
       - FASTAPI_PORT=8000
+      - QDRANT_HOST=http://host.docker.internal # set to http://172.17.0.1 for linux
   
   qdrant:
     image: qdrant/qdrant:latest
