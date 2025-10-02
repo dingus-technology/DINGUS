@@ -21,7 +21,8 @@ def fetch_bugs():
         err_msg = str(e)
         if "Failed to establish a new connection" in err_msg or "Max retries exceeded" in err_msg:
             st.info(
-                "Backend API is not reachable. Please set Loki URL, Job Name, K8s Config Path, and OpenAI API Key in the sidebar, then click Update."
+                "Backend API is not reachable. Please set Loki URL, Job Name, \
+                    K8s Config Path, and OpenAI API Key in the sidebar, then click Update."
             )
         else:
             st.error(f"Failed to fetch bug list: {e}")
