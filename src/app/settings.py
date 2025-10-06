@@ -28,7 +28,7 @@ QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "simulation_logs")
 SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
 QDRANT_VECTOR_SIZE = 96  # 384D for MiniLM or 96 for Spacy
 
-KUBE_CONFIG_PATH = os.getenv("KUBE_CONFIG_PATH", "")
+KUBE_CONFIG_PATH = os.getenv("KUBE_CONFIG_PATH", None)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "key-goes-here")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")

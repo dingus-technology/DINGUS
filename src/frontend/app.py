@@ -108,6 +108,7 @@ def handle_sidebar_submit(loki_base_url, job_name, kube_config_path, open_ai_api
         else:
             st.session_state["k8s_status"] = "fail"
             st.warning(f"K8s connection failed: {resp.json().get('reason', 'Unknown error')}")
+            k8s_ok = True
     except Exception as e:
         st.session_state["k8s_status"] = "fail"
         st.warning(f"K8s connection failed: {e}")
