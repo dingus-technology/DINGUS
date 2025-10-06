@@ -3,22 +3,41 @@
 
 ![Dingus Screenshot](assets/screenshot.png)
 
-Dingus isn’t just another log viewer - it’s your debugging partner. Instead of drowning in dashboards and grepping through logs, Dingus automatically:
+# 📚 Contents
 
-* Surfaces the issues that actually matter
-* Traces them back to your codebase
-* Suggests practical fixes you can apply immediately
+- [Dingus – Advanced Bug Identification and Debugging](#dingus--advanced-bug-identification-and-debugging)
+- [📚 Contents](#-contents)
+- [Why Developers Use Dingus](#why-developers-use-dingus)
+  - [Workflows That Just Flow – Connect the in Dots Seconds, Not Hours](#workflows-that-just-flow--connect-the-in-dots-seconds-not-hours)
+- [🛠️ Setup Guide](#️-setup-guide)
+    - [Kubernetes Config](#kubernetes-config)
+    - [Running on Mac (Colima Recommended)](#running-on-mac-colima-recommended)
+  - [🐳 Run Dingus with Docker](#-run-dingus-with-docker)
+      - [Build \& Start](#build--start)
+    - [✅ Development: Run Code Checks](#-development-run-code-checks)
 
-### Why Developers Use Dingus
 
-* **Zero guesswork** → Know *what* broke and *where* in minutes, not hours
-* **Context-rich insights** → See errors in the bigger picture of your system
-* **Code-first debugging** → Jump straight from anomalies to actionable fixes
+# Why Developers Use Dingus
+Dingus is a tool to gather critical insights and recommend fixes, making it easier and faster to resolve production issues. Instead of drowning in dashboards and grepping through logs, Dingus automatically:
+
+* Surfaces the issues that actually matter.
+* Traces them back to the root.
+* Suggests practical fixes you can apply immediately.
+
+Dingus reviews logs, metrics, code, commits and more in order to build a holistic view of what casued a production issue.
+
+* **Zero guesswork** → Know *what* broke and *where* in minutes, not hours.
+* **Context-rich insights** → See errors in the bigger picture of your system.
+* **Faster debugging** → Jump straight from anomalies to fixes.
 
 If you’ve ever burned a day chasing a production bug that turned out to be something trivial, Dingus was built for you.
 
+## Workflows That Just Flow – Connect the in Dots Seconds, Not Hours
+We don’t believe in replacing your existing tools. Instead, we integrate with them to create a seamless experience. Our goal is to help you resolve issues faster by providing the right information and suggesting effective fixes.
 
-## 🛠️ Setup Guide
+![Dingus Integrations](assets/AI-logs-analysis-production-bug-fixes-chart-2.png)
+
+# 🛠️ Setup Guide
 
 ### Kubernetes Config
 
@@ -38,7 +57,7 @@ colima start
 
 ## 🐳 Run Dingus with Docker
 
-### Build & Start
+#### Build & Start
 
 Spin everything up in one step:
 
@@ -53,7 +72,7 @@ Once running, open [http://0.0.0.0:8501/](http://0.0.0.0:8501/) and add your con
 > **Note:** Not on MacOS? Replace `http://host.docker.internal` with your host machine’s local IP in `DINGUS/docker-compose`.
 
 
-## ✅ Development: Run Code Checks
+### ✅ Development: Run Code Checks
 
 Keep the codebase clean and consistent:
 
@@ -67,29 +86,4 @@ Then run:
 format-checks
 code-checks
 ```
-
-## ⚙️ Optional Configuration
-
-Set environment variables by copying the sample file:
-
-```bash
-cp sample.env .env
-```
-
-These are required for connecting Dingus to **K8s** and **Loki**.
-
-👉 Don’t want to connect Loki yet? Use the [simulation repo](https://github.com/dingus-technology/INFRASTRUCTURE-SIMULATION) to get started locally.
-
-| Variable Name        | Example Value           | Description                                                   |
-| -------------------- | ----------------------- | ------------------------------------------------------------- |
-| **OPENAI_API_KEY**   | `sk-xxxxxxxxxx`         | API key for OpenAI (AI-driven log analysis).                  |
-| **LOKI_URL**         | `http://localhost:3100` | URL of your Loki instance, where logs are stored and queried. |
-| **LOKI_JOB_NAME**    | `my-app-logs`           | The Loki job name that Dingus will analyze.                   |
-| **KUBE_CONFIG_PATH** | `file_path/config.yaml` | Path to your Kubernetes config file.                          |
-
-
-## 🚀 What’s Next?
-
-* Hook Dingus up to your real cluster and logs
-* Start catching bugs **before they catch you**
-* Move from reactive firefighting to proactive debugging
+                       
