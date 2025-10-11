@@ -46,6 +46,10 @@ helm repo add dingus https://dingus-technology.github.io/DINGUS
 helm install dingus dingus/dingus
 ```
 
+Port-forward the UI:
+```bash
+kubectl port-forward svc/dingus-dingus 8501:8501 
+```
 
 ### Running on Mac (Colima Recommended)
 
@@ -101,9 +105,12 @@ docker build -t dingusai/dingus:latest .;
 docker login;
 docker push dingusai/dingus:latest;
 ```
+Optional: run locally with `docker run dingusai/dingus:latest`
 
 Then create the Helm package:
 
 ```bash
 helm package dingus-chart/
 ```
+
+Optional: Install the code directly `helm install dingus dingus-chart/   `

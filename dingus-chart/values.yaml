@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: dingusai/dingus
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: ClusterIP
