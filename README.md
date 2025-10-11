@@ -15,6 +15,7 @@
   - [🐳 Run Dingus with Docker](#-run-dingus-with-docker)
       - [Build \& Start](#build--start)
     - [✅ Development: Run Code Checks](#-development-run-code-checks)
+      - [Docker Hub Deployment](#docker-hub-deployment)
 
 
 # Why Developers Use Dingus
@@ -85,5 +86,14 @@ Then run:
 ```bash
 format-checks
 code-checks
+```
+
+#### Docker Hub Deployment
+
+To push a new image use:
+```bash
+docker build -t dingusai/dingus:latest .;
+docker login;
+docker push dingusai/dingus:latest;
 ```
                        
