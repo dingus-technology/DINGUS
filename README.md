@@ -10,12 +10,12 @@
 - [Why Developers Use Dingus](#why-developers-use-dingus)
   - [Workflows That Just Flow – Connect the in Dots Seconds, Not Hours](#workflows-that-just-flow--connect-the-in-dots-seconds-not-hours)
 - [🛠️ Setup Guide](#️-setup-guide)
-    - [Kubernetes Config](#kubernetes-config)
+    - [Helm](#helm)
     - [Running on Mac (Colima Recommended)](#running-on-mac-colima-recommended)
   - [🐳 Run Dingus with Docker](#-run-dingus-with-docker)
       - [Build \& Start](#build--start)
     - [✅ Development: Run Code Checks](#-development-run-code-checks)
-      - [Docker Hub Deployment](#docker-hub-deployment)
+      - [Docker Hub and Helm Deployment](#docker-hub-and-helm-deployment)
 
 
 # Why Developers Use Dingus
@@ -40,13 +40,12 @@ We don’t believe in replacing your existing tools. Instead, we integrate with 
 
 # 🛠️ Setup Guide
 
-### Kubernetes Config
-
-For Dingus to observe your K8s cluster, place your kube config in the top-level directory:
-
+### Helm
 ```bash
-DINGUS/.kube/config
+helm repo add dingus https://dingus-technology.github.io/DINGUS
+helm install dingus dingus/dingus
 ```
+
 
 ### Running on Mac (Colima Recommended)
 
@@ -57,6 +56,12 @@ colima start
 ```
 
 ## 🐳 Run Dingus with Docker
+
+First clone this repository, then for Dingus to observe your K8s cluster, place your kube config in the top-level directory:
+
+```bash
+DINGUS/.kube/config
+```
 
 #### Build & Start
 
@@ -88,12 +93,17 @@ format-checks
 code-checks
 ```
 
-#### Docker Hub Deployment
+#### Docker Hub and Helm Deployment
 
-To push a new image use:
+To push a new image to Docker Hub use:
 ```bash
 docker build -t dingusai/dingus:latest .;
 docker login;
 docker push dingusai/dingus:latest;
 ```
-                       
+
+Then create the Helm package:
+
+```bash
+helm package dingus-chart/
+```
