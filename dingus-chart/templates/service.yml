@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dingus.fullname" . }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ include "dingus.name" . }}
+  ports:
+    - name: fastapi
+      port: 8000
+      targetPort: 8000
+    - name: streamlit
+      port: 8501
+      targetPort: 8501

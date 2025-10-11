@@ -42,9 +42,11 @@ RUN pip install --upgrade pip && pip install -r /src/requirements.txt
 RUN python -m spacy download en_core_web_sm
 
 # Copy source code
-COPY --chown=$USER_NAME:$USER_NAME \
-    ./src /src/ \
-    ./assets /assets/
+COPY --chown=$USER_NAME:$USER_NAME ./assets /assets/
+COPY --chown=$USER_NAME:$USER_NAME ./src /src/
+
+# Make entrypoint script executable
+RUN chmod +x entrypoint.sh
 
 # Add aliases
 RUN echo 'alias format-checks="bash /scripts/format-checks.sh"' >> /home/$USER_NAME/.bashrc
@@ -57,4 +59,4 @@ RUN echo 'PS1="\e[1;31m[$PROJECT_NAME] \e[1;34m\u@\h\e[m \w\$ "' >> /home/$USER_
 # Expose port
 EXPOSE 8000
 
-ENTRYPOINT ["bash", "/src/entrypoint.sh"]
+ENTRYPOINT ["bash", "entrypoint.sh"]
