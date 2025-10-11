@@ -1,0 +1,11 @@
+apiVersion: v2
+name: dingus
+description: LLM-powered log synthesizer + bug catcher
+type: application
+version: 0.1.0
+appVersion: "latest"
+
+dependencies:
+  - name: qdrant
+    version: 1.15.5
+    repository: https://qdrant.github.io/qdrant-helm

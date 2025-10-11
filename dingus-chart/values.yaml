@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: dingusai/dingus
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+
+env:
+  LOKI_URL: "http://loki:3100"
+
+qdrant:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 2Gi
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingress:
+  enabled: false
+  host: dingus.local

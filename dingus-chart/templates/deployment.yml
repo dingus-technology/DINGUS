@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dingus.fullname" . }}
+  labels:
+    app: {{ include "dingus.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "dingus.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "dingus.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: fastapi
+              containerPort: 8000
+            - name: streamlit
+              containerPort: 8501
+          env:
+            - name: LOKI_URL
+              value: {{ .Values.env.LOKI_URL | quote }}
+            - name: QDRANT_HOST
+              value: "http://{{ .Release.Name }}-qdrant:6333"
+          volumeMounts:
+            - name: kube-config
+              mountPath: /.kube
+      volumes:
+        - name: kube-config
