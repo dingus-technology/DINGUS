@@ -113,4 +113,4 @@ Then create the Helm package:
 helm package dingus-chart/
 ```
 
-Optional: Install the code directly `helm install dingus dingus-chart/   `
+Optional: Install the code locally `helm install dingus dingus-chart/`
