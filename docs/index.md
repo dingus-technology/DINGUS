@@ -3,7 +3,7 @@
 
 # [Dingus](https://www.dingusai.dev) – Advanced Bug Identification and Debugging
 
-![Dingus Screenshot](assets/screenshot.png)
+![Dingus Screenshot](assets/dingus-ai-logs-ui.png)
 
 # 🛠️ Setup Guide
 
