@@ -1,7 +1,7 @@
 
 # [Dingus](https://www.dingusai.dev) – Advanced Bug Identification and Debugging
 
-![Dingus Screenshot](../assets/screenshot.png)
+![Dingus Screenshot](assets/screenshot.png)
 
 # 🛠️ Setup Guide
 
@@ -34,4 +34,4 @@ If you’ve ever burned a day chasing a production bug that turned out to be som
 ## Workflows That Just Flow – Connect the in Dots Seconds, Not Hours
 We don’t believe in replacing your existing tools. Instead, we integrate with them to create a seamless experience. Our goal is to help you resolve issues faster by providing the right information and suggesting effective fixes.
 
-![Dingus Integrations](../assets/AI-logs-analysis-production-bug-fixes-chart-2.png)
+![Dingus Integrations](assets/AI-logs-analysis-production-bug-fixes-chart-2.png)
