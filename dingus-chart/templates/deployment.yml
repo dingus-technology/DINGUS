@@ -27,7 +27,7 @@ spec:
             - name: LOKI_URL
               value: {{ .Values.env.LOKI_URL | quote }}
             - name: QDRANT_HOST
-              value: "http://{{ .Release.Name }}-qdrant:6333"
+              value: "http://{{ .Release.Name }}-qdrant"
           volumeMounts:
             - name: kube-config
               mountPath: /.kube
