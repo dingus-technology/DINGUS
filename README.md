@@ -42,7 +42,7 @@ We don’t believe in replacing your existing tools. Instead, we integrate with 
 
 ### Helm
 ```bash
-helm repo add dingus https://dingus-technology.github.io/DINGUS/dingus-chart
+helm repo add dingus https://dingus-technology.github.io/DINGUS
 helm install dingus dingus/dingus
 ```
 
@@ -110,8 +110,8 @@ Optional: run locally with `docker run dingusai/dingus:latest`
 Then create the Helm package:
 
 ```bash
-helm package dingus-chart/ -d dingus-chart/;
-helm repo index dingus-chart/;
+helm package docs/dingus-chart -d docs/;
+helm repo index docs/;
 ```
 
 Optional: Install the code locally `helm install dingus dingus-chart/`
