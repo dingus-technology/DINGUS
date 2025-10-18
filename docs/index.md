@@ -1,4 +1,6 @@
 
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
 # [Dingus](https://www.dingusai.dev) – Advanced Bug Identification and Debugging
 
 ![Dingus Screenshot](assets/screenshot.png)
