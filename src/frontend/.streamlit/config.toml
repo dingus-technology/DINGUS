@@ -4,3 +4,6 @@ primaryColor = "#FAFAFA"
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbarMode = "viewer"
